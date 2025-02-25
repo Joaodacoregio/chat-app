@@ -3,11 +3,13 @@
 
 
 <div class="page">
- 
+    @if (!Navigation.Uri.Contains("login"))
+    {
          <div class="sidebar">
             <NavMenu />
         </div>
- 
+       
+    }
 
 
     <main>
