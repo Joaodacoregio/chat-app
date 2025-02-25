@@ -3,7 +3,8 @@
 
 
 <div class="page">
-    @if (!Navigation.Uri.Contains("login"))
+    <!--TODO: Criar uma lista de paginas sem sidebar-->
+    @if (!Navigation.Uri.Contains("login") && !Navigation.Uri.Contains("register"))
     {
          <div class="sidebar">
             <NavMenu />

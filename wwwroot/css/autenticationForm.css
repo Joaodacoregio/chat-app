@@ -1,27 +1,22 @@
-﻿body {
-    background-color: #f8f9fa;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
-}
-
+﻿
 .login-container {
-    width: 100%;  
-    max-width: 400px;  
+    top: 5rem;
+    left: 35%;
+    width: 30%;
+    max-width:600px;
+    position: absolute;
     padding: 30px;
     border-radius: 10px;
     background-color: #ffffff;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    box-sizing: border-box;  
 }
+
 
 .login-header {
     text-align: left;
     margin-bottom: 20px;
-    font-size: 20px;
+    font-size: 17px;
     font-weight: bold;
     color: #00000099;
 }
@@ -47,7 +42,7 @@
 .form-control {
     border-radius: 8px;
     margin-bottom: 15px;
-    width: 100%;
+    display:flex;
 }
 
 .btn-primary {
@@ -104,6 +99,7 @@ hr {
     padding: 0;
 }
 
+    /* Garantir que o ícone fique alinhado à direita */
     .toggle-password i {
         font-size: 16px;
         margin-right: 2px;
