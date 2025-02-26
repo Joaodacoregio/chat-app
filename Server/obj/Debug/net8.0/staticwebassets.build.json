@@ -1,8 +1,8 @@
 {
   "Version": 1,
-  "Hash": "FppuLzn6aBI2ENHgo2uwH8/nnaHdBkX5hQ9hEkl5cZ4=",
-  "Source": "chatApp.Server",
-  "BasePath": "_content/chatApp.Server",
+  "Hash": "jnP5UQUPCD3pztejublk/8ik42tooY/Uopt+nZog6TM=",
+  "Source": "chatApp.server",
+  "BasePath": "_content/chatApp.server",
   "Mode": "Default",
   "ManifestType": "Build",
   "ReferencedProjectsConfiguration": [],

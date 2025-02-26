@@ -312,9 +312,9 @@ C:\Users\MarinaJoao\source\repos\chat-app\Server\obj\Debug\net8.0\staticwebasset
 C:\Users\MarinaJoao\source\repos\chat-app\Server\obj\Debug\net8.0\staticwebassets\msbuild.buildTransitive.chatApp.Server.props
 C:\Users\MarinaJoao\source\repos\chat-app\Server\obj\Debug\net8.0\staticwebassets.pack.json
 C:\Users\MarinaJoao\source\repos\chat-app\Server\obj\Debug\net8.0\scopedcss\bundle\chatApp.Server.styles.css
-C:\Users\MarinaJoao\source\repos\chat-app\Server\obj\Debug\net8.0\chatApp..5907EE0D.Up2Date
 C:\Users\MarinaJoao\source\repos\chat-app\Server\obj\Debug\net8.0\chatApp.Server.dll
 C:\Users\MarinaJoao\source\repos\chat-app\Server\obj\Debug\net8.0\refint\chatApp.Server.dll
 C:\Users\MarinaJoao\source\repos\chat-app\Server\obj\Debug\net8.0\chatApp.Server.pdb
 C:\Users\MarinaJoao\source\repos\chat-app\Server\obj\Debug\net8.0\chatApp.Server.genruntimeconfig.cache
 C:\Users\MarinaJoao\source\repos\chat-app\Server\obj\Debug\net8.0\ref\chatApp.Server.dll
+C:\Users\MarinaJoao\source\repos\chat-app\Server\obj\Debug\net8.0\chatApp..58F7692D.Up2Date
