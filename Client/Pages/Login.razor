@@ -1,0 +1,69 @@
+﻿@page "/login"
+@inject NavigationManager Navigation
+
+
+
+<HeadContent>
+    <link rel="stylesheet" href="css/autenticationForm.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</HeadContent>
+
+
+    <div class="login-container">
+        <div class="login-header">
+            <i class="fa fa-user"></i> Entrar no chat do Jo�o
+        </div>
+        <hr>
+
+        <EditForm Model="@loginModel" OnValidSubmit="@HandleLogin">
+            <DataAnnotationsValidator />
+
+            <div class="form-group input-icon-left">
+                <i class="fa fa-envelope"></i>
+                <InputText type="email" class="form-control" @bind-Value="loginModel.Email" placeholder="Digite seu email" required />
+            </div>
+
+            <div class="form-group input-icon-left">
+                <i class="fa fa-lock"></i>
+                <InputText type="password" class="form-control" @bind-Value="loginModel.Password" placeholder="Digite sua senha" required />
+            </div>
+
+            <button type="submit" class="btn btn-primary">Entrar</button>
+        </EditForm>
+
+        <div class="login-footer">
+            <span>N�o tem uma conta? <a href="/register">Registre agora</a></span>
+        </div>
+        <hr>
+        <div class="login-footer">
+            <span>Esqueceu sua senha? <a href="#">Redefinir senha</a></span>
+        </div>
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+
+
+@code {
+    private LoginModel loginModel = new();
+
+    private void HandleLogin()
+    {
+        // Simula��o de login (Substitua com uma chamada real � API)
+        if (loginModel.Email == "teste@email.com" && loginModel.Password == "123456")
+        {
+            Navigation.NavigateTo("/chat"); // Redireciona para o chat ap�s o login
+        }
+        else
+        {
+            Console.WriteLine("Login inv�lido!"); // Exemplo de feedback
+        }
+    }
+
+    public class LoginModel
+    {
+        public string Email { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
+    }
+}

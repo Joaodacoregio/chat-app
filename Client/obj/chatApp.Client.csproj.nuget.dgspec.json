@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\MarinaJoao\\source\\repos\\chat-app\\chatApp.Client\\chatApp.Client.csproj": {}
+    "C:\\Users\\MarinaJoao\\source\\repos\\chat-app\\Client\\chatApp.Client.csproj": {}
   },
   "projects": {
-    "C:\\Users\\MarinaJoao\\source\\repos\\chat-app\\chatApp.Client\\chatApp.Client.csproj": {
+    "C:\\Users\\MarinaJoao\\source\\repos\\chat-app\\Client\\chatApp.Client.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\MarinaJoao\\source\\repos\\chat-app\\chatApp.Client\\chatApp.Client.csproj",
+        "projectUniqueName": "C:\\Users\\MarinaJoao\\source\\repos\\chat-app\\Client\\chatApp.Client.csproj",
         "projectName": "chatApp.Client",
-        "projectPath": "C:\\Users\\MarinaJoao\\source\\repos\\chat-app\\chatApp.Client\\chatApp.Client.csproj",
+        "projectPath": "C:\\Users\\MarinaJoao\\source\\repos\\chat-app\\Client\\chatApp.Client.csproj",
         "packagesPath": "C:\\Users\\MarinaJoao\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\MarinaJoao\\source\\repos\\chat-app\\chatApp.Client\\obj\\",
+        "outputPath": "C:\\Users\\MarinaJoao\\source\\repos\\chat-app\\Client\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\MarinaJoao\\AppData\\Roaming\\NuGet\\NuGet.Config",

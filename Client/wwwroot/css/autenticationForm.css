@@ -1,0 +1,106 @@
+﻿
+.login-container {
+    top: 5rem;
+    left: 35%;
+    width: 30%;
+    max-width: 600px;
+    position: absolute;
+    padding: 30px;
+    border-radius: 10px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+
+.login-header {
+    text-align: left;
+    margin-bottom: 20px;
+    font-size: 17px;
+    font-weight: bold;
+    color: #00000099;
+}
+
+.input-icon-left {
+    position: relative;
+}
+
+    .input-icon-left .fa {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #888;
+    }
+
+    .input-icon-left input {
+        padding-left: 40px;
+        height: 45px;
+        font-size: 16px;
+    }
+
+.form-control {
+    border-radius: 8px;
+    margin-bottom: 15px;
+    display: flex;
+}
+
+.btn-primary {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    border-radius: 8px;
+    margin: 5px 0px 30px 0px;
+}
+
+hr {
+    margin: 20px 0;
+}
+
+.login-footer {
+    text-align: center;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+    .login-footer a {
+        text-decoration: none;
+        color: #007bff;
+    }
+
+@media (max-width: 480px) {
+    .login-container {
+        padding: 20px;
+    }
+
+    .btn-primary {
+        font-size: 14px;
+    }
+}
+
+.password-container {
+    position: relative;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #666;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    padding: 0;
+}
+
+    /* Garantir que o ícone fique alinhado à direita */
+    .toggle-password i {
+        font-size: 16px;
+        margin-right: 2px;
+    }

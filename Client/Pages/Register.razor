@@ -1,0 +1,101 @@
+﻿@page "/register"
+@inject NavigationManager Navigation
+
+<HeadContent>
+    <link rel="stylesheet" href="css/autenticationForm.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</HeadContent>
+
+<body>
+    <div class="login-container">
+        <div class="login-header">
+            <i class="fa fa-user-plus"></i> Criar conta
+        </div>
+        <hr>
+
+        <EditForm Model="@registerModel" OnValidSubmit="HandleRegister">
+            <DataAnnotationsValidator />
+
+            <!-- Email -->
+            <div class="form-group input-icon-left">
+                <i class="fa fa-envelope"></i>
+                <InputText type="email" class="form-control" @bind-Value="registerModel.Email" placeholder="Digite seu email" required />
+            </div>
+
+            <!-- Senha -->
+            <div class="form-group input-icon-left password-container">
+                <i class="fa fa-lock"></i>
+                <InputText type="@passwordType" class="form-control" @bind-Value="registerModel.Password" placeholder="Crie uma senha" required />
+                <button type="button" class="toggle-password" @onclick="TogglePasswordVisibility">
+                    <i class="fa fa-eye"></i>
+                </button>
+            </div>
+
+            <!-- Confirmar Senha -->
+            <div class="form-group input-icon-left password-container">
+                <i class="fa fa-lock"></i>
+                <InputText type="@confirmPasswordType" class="form-control" @bind-Value="registerModel.ConfirmPassword" placeholder="Confirme sua senha" required />
+                <button type="button" class="toggle-password" @onclick="ToggleConfirmPasswordVisibility">
+                    <i class="fa fa-eye"></i>
+                </button>
+            </div>
+
+            <!-- Apelido -->
+            <div class="form-group input-icon-left">
+                <i class="fa fa-user"></i>
+                <InputText type="text" class="form-control" @bind-Value="registerModel.Nickname" placeholder="Escolha um apelido" required />
+            </div>
+
+            <!-- Foto (Opcional) -->
+            <div class="form-group">
+                <label for="photo" class="form-label">Foto de perfil (opcional):</label>
+                <InputFile class="form-control" @bind-Value="registerModel.Photo" />
+            </div>
+
+            <button type="submit" class="btn btn-primary">Registrar</button>
+        </EditForm>
+
+        <div class="login-footer">
+            <span>Já tem uma conta? <a href="/login">Entre nela aqui!</a></span>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+
+@code {
+    private RegisterModel registerModel = new RegisterModel();
+    private string passwordType = "password";
+    private string confirmPasswordType = "password";
+
+    private void HandleRegister()
+    {
+        // Lógica para registrar o usuário
+        Console.WriteLine($"Email: {registerModel.Email}, Senha: {registerModel.Password}, Apelido: {registerModel.Nickname}");
+
+        // Aqui você pode chamar a API de registro ou fazer outra lógica necessária
+
+        // Redirecionar para a página de login após o registro (exemplo)
+        Navigation.NavigateTo("/login");
+    }
+
+    private void TogglePasswordVisibility()
+    {
+        passwordType = passwordType == "password" ? "text" : "password";
+    }
+
+    private void ToggleConfirmPasswordVisibility()
+    {
+        confirmPasswordType = confirmPasswordType == "password" ? "text" : "password";
+    }
+
+    public class RegisterModel
+    {
+        public string Email { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
+        public string ConfirmPassword { get; set; } = string.Empty;
+        public string Nickname { get; set; } = string.Empty;
+        public IBrowserFile? Photo { get; set; } // Para a foto de perfil
+    }
+}

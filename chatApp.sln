@@ -3,17 +3,14 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "chatApp.Client", "Client\chatApp.Client.csproj", "{015F6C8D-0746-4CC7-B766-E1CB6B319DCC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "chatApp.Client", "Client\chatApp.Client.csproj", "{015F6C8D-0746-4CC7-B766-E1CB6B319DCC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "chatApp.Server", "Server\chatApp.Server.csproj", "{DDC6ADA7-3C1B-491E-B0B4-07DF16EA4867}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "chatApp.Server", "Server\chatApp.Server.csproj", "{DDC6ADA7-3C1B-491E-B0B4-07DF16EA4867}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{015F6C8D-0746-4CC7-B766-E1CB6B319DCC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -24,5 +21,11 @@ Global
 		{DDC6ADA7-3C1B-491E-B0B4-07DF16EA4867}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DDC6ADA7-3C1B-491E-B0B4-07DF16EA4867}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DDC6ADA7-3C1B-491E-B0B4-07DF16EA4867}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B8BD4F4B-7B54-4F10-9FB3-9FE5D862DF50}
 	EndGlobalSection
 EndGlobal
