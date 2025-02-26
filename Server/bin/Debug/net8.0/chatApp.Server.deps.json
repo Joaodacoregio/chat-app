@@ -6,7 +6,7 @@
   "compilationOptions": {},
   "targets": {
     ".NETCoreApp,Version=v8.0": {
-      "chatApp.server/1.0.0": {
+      "chatApp.Server/1.0.0": {
         "dependencies": {
           "Microsoft.AspNetCore.Cors": "2.3.0",
           "Microsoft.AspNetCore.OpenApi": "8.0.10",
@@ -16,7 +16,7 @@
           "Swashbuckle.AspNetCore": "6.6.2"
         },
         "runtime": {
-          "chatApp.server.dll": {}
+          "chatApp.Server.dll": {}
         }
       },
       "Humanizer.Core/2.14.1": {
@@ -913,7 +913,7 @@
     }
   },
   "libraries": {
-    "chatApp.server/1.0.0": {
+    "chatApp.Server/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "vMq+RFPD+rg=",
+  "dgSpecHash": "XBpESgzC6js=",
   "success": true,
-  "projectFilePath": "C:\\Users\\MarinaJoao\\source\\repos\\chat-app\\Server\\chatApp.server.csproj",
+  "projectFilePath": "C:\\Users\\MarinaJoao\\source\\repos\\chat-app\\Server\\chatApp.Server.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\MarinaJoao\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\MarinaJoao\\.nuget\\packages\\microsoft.aspnetcore.cors\\2.3.0\\microsoft.aspnetcore.cors.2.3.0.nupkg.sha512",

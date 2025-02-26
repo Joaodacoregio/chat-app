@@ -77,40 +77,61 @@
             await ShowErrorModal();
             return;
         }
+        //Conteudo da requisição 
+        StringContent content;
 
-        string hashedPassword = ComputeSha256Hash(registerModel.Password);
-
-        var content = new StringContent(
-            JsonSerializer.Serialize(new
-            {
-                Email = registerModel.Email,
-                Password = hashedPassword,
-                Nickname = registerModel.Nickname
-            }),
-            Encoding.UTF8,
-            "application/json"
-        );
-
-        var response = await Http.PostAsync("api/auth/register", content);
-
-        if (response.IsSuccessStatusCode)
+        try
         {
-            await JS.InvokeVoidAsync("Swal.fire", new
-            {
-                icon = "success",
-                title = "Registro realizado com sucesso",
-                text = "Você foi registrado com sucesso! Faça login para acessar.",
-                confirmButtonText = "OK"
-            });
-            Navigation.NavigateTo("/login");
+            string hashedPassword = ComputeSha256Hash(registerModel.Password);
+            //Serializa o JSON e coloca no conteudo (JSON so faz o roteamento serializado)
+            content = new StringContent(
+                JsonSerializer.Serialize(new
+                {
+                    Email = registerModel.Email,
+                    Password = hashedPassword,
+                    Nickname = registerModel.Nickname
+                }),
+                Encoding.UTF8,
+                "application/json"
+            );
         }
-        else
+        catch (Exception ex)
         {
-            var errorMessageResponse = await response.Content.ReadAsStringAsync();
-            errorMessage = "Erro: " + errorMessageResponse;
+            errorMessage = "Erro ao processar a senha. Detalhes: " + ex.Message;
+            await ShowErrorModal();
+            return;
+        }
+
+        try
+        {
+            var response = await Http.PostAsync("api/auth/register", content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                await JS.InvokeVoidAsync("Swal.fire", new
+                {
+                    icon = "success",
+                    title = "Registro realizado com sucesso",
+                    text = "Você foi registrado com sucesso! Faça login para acessar.",
+                    confirmButtonText = "OK"
+                });
+                Navigation.NavigateTo("/login");
+            }
+            else
+            {
+                var errorMessageResponse = await response.Content.ReadAsStringAsync();
+                errorMessage = "Erro: " + errorMessageResponse;
+                await ShowErrorModal();
+            }
+        }
+        catch (Exception ex)
+        {
+            // Captura erros relacionados à requisição HTTP
+            errorMessage = "Erro ao registrar: " + ex.Message;
             await ShowErrorModal();
         }
     }
+
 
     private async Task ShowErrorModal()
     {

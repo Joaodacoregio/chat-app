@@ -317,4 +317,4 @@ C:\Users\MarinaJoao\source\repos\chat-app\Server\obj\Debug\net8.0\refint\chatApp
 C:\Users\MarinaJoao\source\repos\chat-app\Server\obj\Debug\net8.0\chatApp.Server.pdb
 C:\Users\MarinaJoao\source\repos\chat-app\Server\obj\Debug\net8.0\chatApp.Server.genruntimeconfig.cache
 C:\Users\MarinaJoao\source\repos\chat-app\Server\obj\Debug\net8.0\ref\chatApp.Server.dll
-C:\Users\MarinaJoao\source\repos\chat-app\Server\obj\Debug\net8.0\chatApp..58F7692D.Up2Date
+C:\Users\MarinaJoao\source\repos\chat-app\Server\obj\Debug\net8.0\chatApp..5907EE0D.Up2Date

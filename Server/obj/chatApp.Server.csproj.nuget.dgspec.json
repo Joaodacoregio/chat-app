@@ -1,15 +1,15 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\MarinaJoao\\source\\repos\\chat-app\\Server\\chatApp.server.csproj": {}
+    "C:\\Users\\MarinaJoao\\source\\repos\\chat-app\\Server\\chatApp.Server.csproj": {}
   },
   "projects": {
-    "C:\\Users\\MarinaJoao\\source\\repos\\chat-app\\Server\\chatApp.server.csproj": {
+    "C:\\Users\\MarinaJoao\\source\\repos\\chat-app\\Server\\chatApp.Server.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\MarinaJoao\\source\\repos\\chat-app\\Server\\chatApp.server.csproj",
-        "projectName": "chatApp.server",
-        "projectPath": "C:\\Users\\MarinaJoao\\source\\repos\\chat-app\\Server\\chatApp.server.csproj",
+        "projectUniqueName": "C:\\Users\\MarinaJoao\\source\\repos\\chat-app\\Server\\chatApp.Server.csproj",
+        "projectName": "chatApp.Server",
+        "projectPath": "C:\\Users\\MarinaJoao\\source\\repos\\chat-app\\Server\\chatApp.Server.csproj",
         "packagesPath": "C:\\Users\\MarinaJoao\\.nuget\\packages\\",
         "outputPath": "C:\\Users\\MarinaJoao\\source\\repos\\chat-app\\Server\\obj\\",
         "projectStyle": "PackageReference",
