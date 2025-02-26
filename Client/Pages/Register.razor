@@ -1,10 +1,10 @@
 ﻿@page "/register"
 @inject NavigationManager Navigation
 @inject HttpClient Http
+@inject IJSRuntime JS
 
 <HeadContent>
     <link rel="stylesheet" href="css/autenticationForm.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </HeadContent>
 
 <body>
@@ -16,8 +16,6 @@
 
         <EditForm Model="@registerModel" OnValidSubmit="HandleRegister">
             <DataAnnotationsValidator />
-
-            <div class="text-danger" role="alert">@errorMessage</div>
 
             <!-- Email -->
             <div class="form-group input-icon-left">
@@ -63,7 +61,6 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 @code {
@@ -77,6 +74,7 @@
         if (registerModel.Password != registerModel.ConfirmPassword)
         {
             errorMessage = "As senhas não coincidem.";
+            await ShowErrorModal();
             return;
         }
 
@@ -97,14 +95,39 @@
 
         if (response.IsSuccessStatusCode)
         {
+            await JS.InvokeVoidAsync("Swal.fire", new
+            {
+                icon = "success",
+                title = "Registro realizado com sucesso",
+                text = "Você foi registrado com sucesso! Faça login para acessar.",
+                confirmButtonText = "OK"
+            });
             Navigation.NavigateTo("/login");
         }
         else
         {
             var errorMessageResponse = await response.Content.ReadAsStringAsync();
             errorMessage = "Erro: " + errorMessageResponse;
+            await ShowErrorModal();
         }
     }
+
+    private async Task ShowErrorModal()
+    {
+        if (!string.IsNullOrEmpty(errorMessage))
+        {
+            await JS.InvokeVoidAsync("Swal.fire", new
+            {
+                icon = "error",
+                title = "Oops...",
+                text = errorMessage,
+                confirmButtonText = "OK",
+                width = "15%",  // Tamanho personalizado do modal
+                height = "15%"
+            });
+        }
+    }
+
 
     private void TogglePasswordVisibility()
     {
@@ -116,7 +139,6 @@
         confirmPasswordType = confirmPasswordType == "password" ? "text" : "password";
     }
 
-    //Hash na senha;
     private static string ComputeSha256Hash(string rawData)
     {
         using (SHA256 sha256Hash = SHA256.Create())
