@@ -11,9 +11,13 @@ namespace chatApp.Server.Models
         public string Email { get; set; } = string.Empty;
 
         [Required]
-        public string Apelido { get; set; } = string.Empty;
+        public string Nickname { get; set; } = string.Empty;
 
-        public byte[]? Imagem { get; set; } // Foto de perfil opcional
+        public byte[]? Img { get; set; } // Foto de perfil opcional
+
+        [Required]
+        public string Password { get; set; } = string.Empty; // Senha obrigatória
     }
+
 
 }
