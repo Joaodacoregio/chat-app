@@ -1,15 +1,15 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Joao\\Desktop\\repos\\chat-app\\Client\\chatApp.Client.csproj": {}
+    "C:\\Users\\Joao\\Desktop\\repos\\chat-app\\Client\\chatApp.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Joao\\Desktop\\repos\\chat-app\\Client\\chatApp.Client.csproj": {
+    "C:\\Users\\Joao\\Desktop\\repos\\chat-app\\Client\\chatApp.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Joao\\Desktop\\repos\\chat-app\\Client\\chatApp.Client.csproj",
-        "projectName": "chatApp.Client",
-        "projectPath": "C:\\Users\\Joao\\Desktop\\repos\\chat-app\\Client\\chatApp.Client.csproj",
+        "projectUniqueName": "C:\\Users\\Joao\\Desktop\\repos\\chat-app\\Client\\chatApp.csproj",
+        "projectName": "chatApp",
+        "projectPath": "C:\\Users\\Joao\\Desktop\\repos\\chat-app\\Client\\chatApp.csproj",
         "packagesPath": "C:\\Users\\Joao\\.nuget\\packages\\",
         "outputPath": "C:\\Users\\Joao\\Desktop\\repos\\chat-app\\Client\\obj\\",
         "projectStyle": "PackageReference",
@@ -58,6 +58,16 @@
               "suppressParent": "All",
               "target": "Package",
               "version": "[8.0.10, )"
+            },
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[9.0.2, )"
+            },
+            "Microsoft.EntityFrameworkCore.Sqlite": {
+              "target": "Package",
+              "version": "[9.0.2, )"
             },
             "Microsoft.NET.ILLink.Tasks": {
               "suppressParent": "All",

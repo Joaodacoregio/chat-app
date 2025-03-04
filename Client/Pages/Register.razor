@@ -77,13 +77,12 @@
             await ShowErrorModal();
             return;
         }
-        //Conteudo da requisição 
-        StringContent content;
 
+        // Cria o conteúdo da requisição
+        StringContent content;
         try
         {
             string hashedPassword = ComputeSha256Hash(registerModel.Password);
-            //Serializa o JSON e coloca no conteudo (JSON so faz o roteamento serializado)
             content = new StringContent(
                 JsonSerializer.Serialize(new
                 {
@@ -104,51 +103,70 @@
 
         try
         {
+            // Modal de request  
+            await JS.InvokeVoidAsync("Swal.fire", new
+            {
+                title = "Processando sua requisição",
+                //Html para spinner azul
+                html = "<div class='spinner-border spinner-border-lg text-primary' role='status'><span class='sr-only'></span></div>",
+                timer = 3000,
+                timerProgressBar = true,
+                showConfirmButton = false, // Remove o botão "OK"
+            });
+
+
+
+
             var response = await Http.PostAsync("api/auth/register", content);
 
             if (response.IsSuccessStatusCode)
             {
+                //Modal de sucesso
                 await JS.InvokeVoidAsync("Swal.fire", new
                 {
                     icon = "success",
                     title = "Registro realizado com sucesso",
                     text = "Você foi registrado com sucesso! Faça login para acessar.",
-                    confirmButtonText = "OK"
+                    showConfirmButton = false,
+                    timer = 1000,            
+                    timerProgressBar = true
                 });
+                // Aguarda o tempo do anúncio antes de navegar
+                await Task.Delay(1000);
                 Navigation.NavigateTo("/login");
             }
             else
             {
                 var errorMessageResponse = await response.Content.ReadAsStringAsync();
                 errorMessage = "Erro: " + errorMessageResponse;
-                await ShowErrorModal();
+                await ShowErrorModal(1000); // Exibe o modal de erro por 1 seg
             }
         }
         catch (Exception ex)
         {
-            // Captura erros relacionados à requisição HTTP
             errorMessage = "Erro ao registrar: " + ex.Message;
-            await ShowErrorModal();
+            await ShowErrorModal(1000); // Exibe o modal de erro por 1 seg
         }
     }
 
-
-    private async Task ShowErrorModal()
+    //Função de erro pois erros podem ser variados devido ao catch
+    private async Task ShowErrorModal(int timer = 3000)
     {
         if (!string.IsNullOrEmpty(errorMessage))
         {
+            await JS.InvokeVoidAsync("Swal.close");
             await JS.InvokeVoidAsync("Swal.fire", new
             {
                 icon = "error",
                 title = "Oops...",
                 text = errorMessage,
-                confirmButtonText = "OK",
-                width = "15%",  // Tamanho personalizado do modal
-                height = "15%"
+                showConfirmButton = false,
+                timer,                   
+                timerProgressBar = true,
+                allowOutsideClick = true
             });
         }
     }
-
 
     private void TogglePasswordVisibility()
     {
