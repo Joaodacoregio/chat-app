@@ -32,11 +32,15 @@ namespace chatApp.Server.Controllers
                 return BadRequest("Email já registrado.");
             }
 
+            // Fazendo o hash no servidor
+            var salt = BCrypt.Net.BCrypt.GenerateSalt(); 
+            var hashedPassword = BCrypt.Net.BCrypt.HashPassword(model.Password, salt);
+
             // Criar o novo usuário
             var user = new User
             {
                 Email = model.Email,
-                Password = model.Password, // Aqui você deve hash a senha antes de salvar no banco (use uma biblioteca como bcrypt)
+                Password = hashedPassword,
                 Nickname = model.Nickname,
                 Img = model.Img
             };
