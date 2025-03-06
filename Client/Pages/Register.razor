@@ -71,67 +71,50 @@
 
     private async Task HandleRegister()
     {
-        if (registerModel.Password != registerModel.ConfirmPassword)
+        if (!HandleToPassword(registerModel)) // Corrigindo a lógica de validação
         {
-            errorMessage = "As senhas não coincidem.";
             await ShowErrorModal();
             return;
         }
 
-        // Cria o conteúdo da requisição
-        StringContent content;
         try
         {
-  
-            content = new StringContent(
+            var content = new StringContent(
                 JsonSerializer.Serialize(new
                 {
                     Email = registerModel.Email,
                     Password = registerModel.Password,
+                    ConfirmPassword = registerModel.ConfirmPassword, // Adicionando a confirmação
                     Nickname = registerModel.Nickname
                 }),
                 Encoding.UTF8,
                 "application/json"
             );
-        }
-        catch (Exception ex)
-        {
-            errorMessage = "Erro ao processar a senha. Detalhes: " + ex.Message;
-            await ShowErrorModal();
-            return;
-        }
 
-        try
-        {
             // Modal de request  
             await JS.InvokeVoidAsync("Swal.fire", new
             {
                 title = "Processando sua requisição",
-                //Html para spinner azul
                 html = "<div class='spinner-border spinner-border-lg text-primary' role='status'><span class='sr-only'></span></div>",
                 timer = 3000,
                 timerProgressBar = true,
-                showConfirmButton = false, // Remove o botão "OK"
+                showConfirmButton = false,
             });
-
-
-
 
             var response = await Http.PostAsync("api/auth/register", content);
 
             if (response.IsSuccessStatusCode)
             {
-                //Modal de sucesso
                 await JS.InvokeVoidAsync("Swal.fire", new
                 {
                     icon = "success",
                     title = "Registro realizado com sucesso",
                     text = "Você foi registrado com sucesso! Faça login para acessar.",
                     showConfirmButton = false,
-                    timer = 1000,            
+                    timer = 1000,
                     timerProgressBar = true
                 });
-                // Aguarda o tempo do anúncio antes de navegar
+
                 await Task.Delay(1000);
                 Navigation.NavigateTo("/login");
             }
@@ -139,17 +122,39 @@
             {
                 var errorMessageResponse = await response.Content.ReadAsStringAsync();
                 errorMessage = "Erro: " + errorMessageResponse;
-                await ShowErrorModal(1000); // Exibe o modal de erro por 1 seg
+                await ShowErrorModal(1000);
             }
         }
         catch (Exception ex)
         {
             errorMessage = "Erro ao registrar: " + ex.Message;
-            await ShowErrorModal(1000); // Exibe o modal de erro por 1 seg
+            await ShowErrorModal(1000);
         }
     }
 
-    //Função de erro pois erros podem ser variados devido ao catch
+    private bool HandleToPassword(RegisterModel model)
+    {
+        if (string.IsNullOrWhiteSpace(model.Password) || model.Password.Length < 6)
+        {
+            errorMessage = "A senha deve ter pelo menos 6 caracteres.";
+            return false;
+        }
+
+        if (string.IsNullOrWhiteSpace(model.ConfirmPassword) || model.ConfirmPassword.Length < 6)
+        {
+            errorMessage = "A confirmação da senha deve ter pelo menos 6 caracteres.";
+            return false;
+        }
+
+        if (model.Password != model.ConfirmPassword)
+        {
+            errorMessage = "As senhas não coincidem.";
+            return false;
+        }
+
+        return true;
+    }
+
     private async Task ShowErrorModal(int timer = 3000)
     {
         if (!string.IsNullOrEmpty(errorMessage))
@@ -161,7 +166,7 @@
                 title = "Oops...",
                 text = errorMessage,
                 showConfirmButton = false,
-                timer,                   
+                timer,
                 timerProgressBar = true,
                 allowOutsideClick = true
             });
@@ -178,13 +183,12 @@
         confirmPasswordType = confirmPasswordType == "password" ? "text" : "password";
     }
 
- 
     public class RegisterModel
     {
-        public string Email { get; set; } = string.Empty;
-        public string Password { get; set; } = string.Empty;
-        public string ConfirmPassword { get; set; } = string.Empty;
-        public string Nickname { get; set; } = string.Empty;
-        public IBrowserFile? Photo { get; set; } // Para a foto de perfil
+        public  string Email { get; set; } = string.Empty;
+        public  string Password { get; set; } = string.Empty;
+        public  string ConfirmPassword { get; set; } = string.Empty;
+        public  string Nickname { get; set; } = string.Empty;
+        public IBrowserFile? Photo { get; set; } //Opcional (?)
     }
 }

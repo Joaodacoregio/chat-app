@@ -1,24 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Joao\\desktop\\repos\\chat-app\\Server\\chatApp.Server.csproj": {}
+    "C:\\Users\\MarinaJoao\\source\\repos\\chat-app\\Server\\chatApp.Server.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Joao\\desktop\\repos\\chat-app\\Server\\chatApp.Server.csproj": {
+    "C:\\Users\\MarinaJoao\\source\\repos\\chat-app\\Server\\chatApp.Server.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Joao\\desktop\\repos\\chat-app\\Server\\chatApp.Server.csproj",
+        "projectUniqueName": "C:\\Users\\MarinaJoao\\source\\repos\\chat-app\\Server\\chatApp.Server.csproj",
         "projectName": "chatApp.Server",
-        "projectPath": "C:\\Users\\Joao\\desktop\\repos\\chat-app\\Server\\chatApp.Server.csproj",
-        "packagesPath": "C:\\Users\\Joao\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Joao\\desktop\\repos\\chat-app\\Server\\obj\\",
+        "projectPath": "C:\\Users\\MarinaJoao\\source\\repos\\chat-app\\Server\\chatApp.Server.csproj",
+        "packagesPath": "C:\\Users\\MarinaJoao\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\MarinaJoao\\source\\repos\\chat-app\\Server\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\Joao\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Users\\MarinaJoao\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -43,8 +39,7 @@
           "enableAudit": "true",
           "auditLevel": "low",
           "auditMode": "direct"
-        },
-        "SdkAnalysisLevel": "9.0.200"
+        }
       },
       "frameworks": {
         "net8.0": {
@@ -100,7 +95,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.200/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.403/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

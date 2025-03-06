@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using chatApp.Server.Data;
 
@@ -10,9 +11,11 @@ using chatApp.Server.Data;
 namespace chatApp.Server.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250306073953_RequestsAndUsers1")]
+    partial class RequestsAndUsers1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.2");
@@ -31,6 +34,7 @@ namespace chatApp.Server.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Img")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("IsActive")
@@ -53,6 +57,7 @@ namespace chatApp.Server.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("PasswordResetToken")
+                        .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("TEXT");
 

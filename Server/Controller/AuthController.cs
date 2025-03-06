@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using chatApp.Server.Data;  // Acesse seu contexto de dados
 using chatApp.Server.Models; // Para o modelo de dados de usuário
+using chatApp.Server.Models.requests; // Para o modelo de dados de usuário
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 
@@ -18,7 +19,7 @@ namespace chatApp.Server.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] User model)
+        public async Task<IActionResult> Register([FromBody] RegisterRequest model)
         {
             if (string.IsNullOrEmpty(model.Email) || string.IsNullOrEmpty(model.Password))
             {
