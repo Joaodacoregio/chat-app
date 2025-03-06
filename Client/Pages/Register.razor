@@ -101,7 +101,7 @@
                 showConfirmButton = false,
             });
 
-            var response = await Http.PostAsync("api/auth/register", content);
+            var response = await Http.PostAsync("api/user/register", content);
 
             if (response.IsSuccessStatusCode)
             {

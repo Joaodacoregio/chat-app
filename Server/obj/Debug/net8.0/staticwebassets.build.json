@@ -1,11 +1,12 @@
 {
   "Version": 1,
-  "Hash": "FppuLzn6aBI2ENHgo2uwH8/nnaHdBkX5hQ9hEkl5cZ4=",
+  "Hash": "8xlRghYOlSzr/8awju2qYBySRkap9UGPbVptlQsvGSQ=",
   "Source": "chatApp.Server",
   "BasePath": "_content/chatApp.Server",
   "Mode": "Default",
   "ManifestType": "Build",
   "ReferencedProjectsConfiguration": [],
   "DiscoveryPatterns": [],
-  "Assets": []
+  "Assets": [],
+  "Endpoints": []
 }
