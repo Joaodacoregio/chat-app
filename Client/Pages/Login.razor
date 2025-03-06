@@ -1,5 +1,7 @@
 ﻿@page "/login"
 @inject NavigationManager Navigation
+@inject HttpClient Http
+@inject IJSRuntime JSRuntime
 
 
 
@@ -8,56 +10,117 @@
 </HeadContent>
 
 
-    <div class="login-container">
-        <div class="login-header">
-            <i class="fa fa-user"></i> Entrar no chat do João
-        </div>
-        <hr>
-
-        <EditForm Model="@loginModel" OnValidSubmit="@HandleLogin">
-            <DataAnnotationsValidator />
-
-            <div class="form-group input-icon-left">
-                <i class="fa fa-envelope"></i>
-                <InputText type="email" class="form-control" @bind-Value="loginModel.Email" placeholder="Digite seu email" required />
-            </div>
-
-            <div class="form-group input-icon-left">
-                <i class="fa fa-lock"></i>
-                <InputText type="password" class="form-control" @bind-Value="loginModel.Password" placeholder="Digite sua senha" required />
-            </div>
-
-            <button type="submit" class="btn btn-primary">Entrar</button>
-        </EditForm>
-
-        <div class="login-footer">
-            <span>Não tem uma conta? <a href="/register">Registre agora</a></span>
-        </div>
-        <hr>
-        <div class="login-footer">
-            <span>Esqueceu sua senha? <a href="#">Redefinir senha</a></span>
-        </div>
+<div class="login-container">
+    <div class="login-header">
+        <i class="fa fa-user"></i> Entrar no chat do João
     </div>
+    <hr>
+
+    <EditForm Model="@loginModel" OnValidSubmit="@HandleLogin">
+        <DataAnnotationsValidator />
+
+        <div class="form-group input-icon-left">
+            <i class="fa fa-envelope"></i>
+            <InputText type="email" class="form-control" @bind-Value="loginModel.Email" placeholder="Digite seu email" required />
+        </div>
+
+        <div class="form-group input-icon-left">
+            <i class="fa fa-lock"></i>
+            <InputText type="password" class="form-control" @bind-Value="loginModel.Password" placeholder="Digite sua senha" required />
+        </div>
+
+        <button type="submit" class="btn btn-primary">Entrar</button>
+    </EditForm>
+
+    <div class="login-footer">
+        <span>Não tem uma conta? <a href="/register">Registre agora</a></span>
+    </div>
+    <hr>
+    <div class="login-footer">
+        <span>Esqueceu sua senha? <a href="#">Redefinir senha</a></span>
+    </div>
+</div>
 
 
- 
+
 
 
 
 @code {
     private LoginModel loginModel = new();
 
-    private void HandleLogin()
+    private async Task HandleLogin()
     {
-        // Simula��o de login (Substitua com uma chamada real � API)
-        if (loginModel.Email == "teste@email.com" && loginModel.Password == "123456")
+        var errorMessage = string.Empty;
+
+        try
         {
-            Navigation.NavigateTo("/chat"); // Redireciona para o chat ap�s o login
+ 
+            var request = new HttpRequestMessage(HttpMethod.Post, "api/auth/login")
+                {
+                    Content = JsonContent.Create(loginModel)  
+                };
+
+            request.Headers.Add("Accept", "application/json");
+
+ 
+            var response = await Http.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
+
+ 
+            if (response.IsSuccessStatusCode)
+            {
+                // Tenta desserializar o JSON para obter o token
+                var authResponse = await response.Content.ReadFromJsonAsync<AuthResponse>();
+                var token = authResponse?.Token;
+
+ 
+                if (!string.IsNullOrEmpty(token))
+                {
+                    // Adicionando um log no console para depuração
+                    Console.WriteLine($"Token obtido: {token}");
+
+                    // Armazenar o token no cookie
+                    await JSRuntime.InvokeVoidAsync("setCookie", "authToken", token, 1); // Expiração de 1 dia
+
+                    // Log para confirmar que o token foi armazenado
+                    Console.WriteLine("Token armazenado no cookie.");
+
+                }
+                else
+                {
+                    // Caso o token seja vazio ou nulo
+                    Console.WriteLine("Token não encontrado ou é inválido.");
+                }
+
+            }
+            else
+            {
+                // Caso a resposta seja um erro, lê o conteúdo de erro
+                var errorContent = await response.Content.ReadAsStringAsync();
+                errorMessage = $"Erro no login: {response.StatusCode} - {errorContent}";
+                Console.WriteLine(errorMessage);
+            }
         }
-        else
+        catch (Exception ex)
         {
-            Console.WriteLine("Login inv�lido!"); // Exemplo de feedback
+            // Captura qualquer exceção inesperada e exibe uma mensagem de erro
+            errorMessage = $"Erro: {ex.Message}";
+            Console.WriteLine(errorMessage);
         }
+
+        // Caso haja uma mensagem de erro, pode ser usada posteriormente para exibição no UI
+        if (!string.IsNullOrEmpty(errorMessage))
+        {
+            // Aqui você pode adicionar lógica para mostrar a mensagem de erro na interface de usuário, se necessário
+            Console.WriteLine($"Mensagem de erro: {errorMessage}");
+        }
+    }
+
+
+
+    public class AuthResponse
+    {
+        public string Token { get; set; } = string.Empty;
     }
 
     public class LoginModel

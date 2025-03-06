@@ -1,30 +1,97 @@
 using Microsoft.EntityFrameworkCore;
 using chatApp.Server.Data;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configurar o DbContext com a string de conexão
+// ========================== CONFIGURANDO BANCO DE DADOS ========================== //
+// Configura o DbContext com SQLite (Banco de Desenvolvimento)
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite("Data Source=chatApp.db"));
 
-// Adicionar outros serviços (CORS, Swagger, etc.)
+// ========================== CONFIGURANDO JWT ========================== //
+// Recupera as configurações do JWT do appsettings.json ou User Secrets
+var jwtSettings = builder.Configuration.GetSection("JwtSettings");
+var secretKey = jwtSettings["SecretKey"] ?? throw new InvalidOperationException("JWT SecretKey not found!");
+
+// Configura o middleware de autenticação JWT
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true, // Valida o emissor do token
+        ValidateAudience = true, // Valida o público-alvo do token
+        ValidateLifetime = true, // Garante que o token não tenha expirado
+        ValidateIssuerSigningKey = true, // Verifica a assinatura do token
+
+        ValidIssuer = jwtSettings["Issuer"], // Define o emissor válido
+        ValidAudience = jwtSettings["Audience"], // Define a audiência válida
+        IssuerSigningKey = new SymmetricSecurityKey(
+            Encoding.UTF8.GetBytes(secretKey) // Converte a chave secreta para um formato válido
+        )
+    };
+
+    // Evento para capturar o token do cookie e depuração
+    options.Events = new JwtBearerEvents
+    {
+        OnMessageReceived = context =>
+        {
+            // Obtém o token do cookie, se existir
+            var token = context.Request.Cookies["authToken"];
+            if (!string.IsNullOrEmpty(token))
+            {
+                context.Token = token;
+                Console.WriteLine($"[AUTH] Token recebido do cookie: {token.Substring(0, Math.Min(token.Length, 10))}..."); // Log para debug
+            }
+            else
+            {
+                Console.WriteLine("[AUTH] Nenhum token encontrado no cookie.");
+            }
+            return Task.CompletedTask;
+        }
+    };
+});
+
+// ========================== CONFIGURANDO CORS ========================== //
+// Configuração para permitir requisições do frontend vindo de outro dominio
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
-        policy.AllowAnyOrigin()
-              .AllowAnyMethod()
-              .AllowAnyHeader());
+    {
+        policy.WithOrigins("http://localhost:5127") // URL do frontend
+              .AllowCredentials() // Permite envio de cookies
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
 });
 
+// ========================== CONFIGURANDO SERVIÇOS ========================== //
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Configuração do pipeline de requisições
-app.UseCors("AllowAll");
+// ========================== CONFIGURANDO O PIPELINE ========================== //
+app.UseCors("AllowAll"); // Ativa a política de CORS
+app.UseAuthentication(); // Importante: deve vir antes de Authorization!
 app.UseAuthorization();
-app.MapControllers();
 
+app.MapControllers(); // Mapeia os controllers automaticamente
+
+// ========================== SWAGGER (Documentação da API) ========================== //
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
+// ========================== INICIANDO A APLICAÇÃO ========================== //
 app.Run();
