@@ -40,11 +40,11 @@ namespace chatApp.Server.Controllers
                 return Unauthorized(new { message = "Token não fornecido." });
             }
 
-            // Ler o token
+            // Decodifica e obtem os dados
             var handler = new JwtSecurityTokenHandler();
             var jwtToken = handler.ReadJwtToken(token);
 
-            // Verifique a expiração
+            // TODO:MELHORAR A VERIFICAÇÃO POIS EXISTE UMA FALHA DE SEGURANÇA
             if (jwtToken.ValidTo < DateTime.UtcNow)
             {
                 return Unauthorized(new { message = "Token expirado." });
@@ -86,9 +86,10 @@ namespace chatApp.Server.Controllers
 
             var claims = new[]
             {
-                new Claim(ClaimTypes.Name , user.Email),
-                new Claim(ClaimTypes.NameIdentifier , user.Id.ToString()),
-                new Claim(ClaimTypes.Role , user.Role)
+                new Claim(ClaimTypes.Name, user.Nickname), // Apelido do usuário
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()), // ID do usuário
+                new Claim(ClaimTypes.Email, user.Email), // Email do usuário
+                new Claim(ClaimTypes.Role, user.Role) // Role do usuário
             };
 
             // Hash na chave secreta

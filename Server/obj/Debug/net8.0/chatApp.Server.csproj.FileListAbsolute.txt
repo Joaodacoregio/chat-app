@@ -332,6 +332,7 @@ C:\Users\Joao\Desktop\repos\chat-app\Server\bin\Debug\net8.0\Humanizer.dll
 C:\Users\Joao\Desktop\repos\chat-app\Server\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
 C:\Users\Joao\Desktop\repos\chat-app\Server\bin\Debug\net8.0\Microsoft.AspNetCore.OpenApi.dll
 C:\Users\Joao\Desktop\repos\chat-app\Server\bin\Debug\net8.0\Microsoft.Bcl.AsyncInterfaces.dll
+C:\Users\Joao\Desktop\repos\chat-app\Server\bin\Debug\net8.0\Microsoft.Bcl.Memory.dll
 C:\Users\Joao\Desktop\repos\chat-app\Server\bin\Debug\net8.0\Microsoft.Build.Locator.dll
 C:\Users\Joao\Desktop\repos\chat-app\Server\bin\Debug\net8.0\Microsoft.CodeAnalysis.dll
 C:\Users\Joao\Desktop\repos\chat-app\Server\bin\Debug\net8.0\Microsoft.CodeAnalysis.CSharp.dll
@@ -355,6 +356,7 @@ C:\Users\Joao\Desktop\repos\chat-app\Server\bin\Debug\net8.0\Microsoft.Extension
 C:\Users\Joao\Desktop\repos\chat-app\Server\bin\Debug\net8.0\Microsoft.Extensions.Logging.Abstractions.dll
 C:\Users\Joao\Desktop\repos\chat-app\Server\bin\Debug\net8.0\Microsoft.Extensions.Options.dll
 C:\Users\Joao\Desktop\repos\chat-app\Server\bin\Debug\net8.0\Microsoft.Extensions.Primitives.dll
+C:\Users\Joao\Desktop\repos\chat-app\Server\bin\Debug\net8.0\Microsoft.IdentityModel.Abstractions.dll
 C:\Users\Joao\Desktop\repos\chat-app\Server\bin\Debug\net8.0\Microsoft.IdentityModel.JsonWebTokens.dll
 C:\Users\Joao\Desktop\repos\chat-app\Server\bin\Debug\net8.0\Microsoft.IdentityModel.Logging.dll
 C:\Users\Joao\Desktop\repos\chat-app\Server\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.dll
@@ -490,5 +492,3 @@ C:\Users\Joao\Desktop\repos\chat-app\Server\obj\Debug\net8.0\refint\chatApp.Serv
 C:\Users\Joao\Desktop\repos\chat-app\Server\obj\Debug\net8.0\chatApp.Server.pdb
 C:\Users\Joao\Desktop\repos\chat-app\Server\obj\Debug\net8.0\chatApp.Server.genruntimeconfig.cache
 C:\Users\Joao\Desktop\repos\chat-app\Server\obj\Debug\net8.0\ref\chatApp.Server.dll
-C:\Users\Joao\Desktop\repos\chat-app\Server\bin\Debug\net8.0\Microsoft.Bcl.Memory.dll
-C:\Users\Joao\Desktop\repos\chat-app\Server\bin\Debug\net8.0\Microsoft.IdentityModel.Abstractions.dll

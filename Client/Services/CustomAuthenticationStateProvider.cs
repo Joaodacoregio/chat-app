@@ -4,6 +4,8 @@ using Microsoft.JSInterop;
 using System.Net.Http.Headers;
 using System.Security.Claims;
 
+
+//Essa classe ela é responsavel por mandar o Cookie contendo o token para o servidor em paginas que precisam de autenticação
 public class CookieAuthStateProvider : AuthenticationStateProvider
 {
     private readonly HttpClient _httpClient;
@@ -21,7 +23,7 @@ public class CookieAuthStateProvider : AuthenticationStateProvider
     {
         var currentPath = _navigationManager.ToBaseRelativePath(_navigationManager.Uri);
 
-        // Ignorar verificação em páginas públicas
+        // Ignorar verificação em páginas públicas explicitamente //TODO:CRIAR UM MAP OU FACTORY
         if (currentPath.Equals("login", StringComparison.OrdinalIgnoreCase) ||
             currentPath.Equals("register", StringComparison.OrdinalIgnoreCase))
         {
@@ -30,27 +32,24 @@ public class CookieAuthStateProvider : AuthenticationStateProvider
 
         try
         {
-            // Lê o cookie contendo o token JWT
+            // Função que eu fiz em JS que é importada pelo jsRuntime
             var authToken = await _jsRuntime.InvokeAsync<string>("getCookie", "authToken");
 
-            // Se o token não for encontrado, o usuário não está autenticado
+            //Verifica se existe
             if (string.IsNullOrEmpty(authToken))
             {
                 return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
             }
 
-            // Adiciona o token ao cabeçalho Authorization da requisição HTTP
+            // Adiciona e envia
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", authToken);
-
-            // Chama o endpoint do back-end para verificar o token
             var response = await _httpClient.GetAsync("api/auth/check-auth");
 
             if (response.IsSuccessStatusCode)
             {
-                // Se o token for válido, retornamos um ClaimsPrincipal com identidade autenticada
                 var claims = new List<Claim>
                 {
-                    new Claim(ClaimTypes.Name, "Usuário Autenticado") // Um valor genérico, pois não estamos retornando dados do usuário
+                    new Claim(ClaimTypes.Name, "Usuário Autenticado")  
                 };
                 var identity = new ClaimsIdentity(claims, "Bearer");
                 var claimsPrincipal = new ClaimsPrincipal(identity);

@@ -3,6 +3,7 @@ using chatApp.Server.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using WebSocketChat.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -56,6 +57,8 @@ builder.Services.AddCors(options =>
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddSignalR();
+
 
 var app = builder.Build();
 
@@ -63,8 +66,9 @@ var app = builder.Build();
 app.UseCors("AllowAll"); // Ativa a política de CORS
 app.UseAuthentication(); // Importante: deve vir antes de Authorization!
 app.UseAuthorization();
-
 app.MapControllers(); // Mapeia os controllers automaticamente
+
+
 
 // ========================== SWAGGER (Documentação da API) ========================== //
 if (app.Environment.IsDevelopment())
@@ -72,6 +76,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+
+//==========   Configura o SignalR no pipeline de middleware =============================//
+
+app.MapHub<ChatHub>("/chatHub");  
 
 // ========================== INICIANDO A APLICAÇÃO ========================== //
 app.Run();

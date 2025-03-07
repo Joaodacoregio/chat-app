@@ -27,6 +27,6 @@ builder.Services.AddScoped(sp =>
 });
 
 builder.Services.AddScoped<AuthenticationStateProvider, CookieAuthStateProvider>();
-builder.Services.AddAuthorizationCore(); // Para habilitar a autorização no Blazor
+builder.Services.AddAuthorizationCore();  
 
 await builder.Build().RunAsync();

@@ -1,8 +1,102 @@
-﻿@page "/"
+﻿@page "/chat"
 @attribute [Authorize]
-@inject AuthenticationStateProvider AuthStateProvider
 @inject NavigationManager Navigation
+@inject IJSRuntime jsruntime
+
 
 <h1>Chat</h1>
 
- 
+<div>
+    <input @bind="message" placeholder="Digite sua mensagem..." @onkeydown="OnEnterKeyDown" />
+    <button @onclick="SendMessage">Enviar</button>
+</div>
+
+<div>
+    <h3>Mensagens:</h3>
+    <ul>
+        @foreach (var msg in messages)
+        {
+            <li>@msg</li>
+        }
+    </ul>
+</div>
+
+@code {
+    private string message = "";
+    private List<string> messages = new List<string>();
+    private HubConnection? _hubConnection;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            // Conecta ao SignalR Hub
+            _hubConnection = new HubConnectionBuilder()
+                .WithUrl("http://localhost:5026/chatHub")
+                .Build();
+
+            // Método que recebe a mensagem do Hub e adiciona na lista
+            _hubConnection.On<string>("ReceiveMessage", (message) =>
+            {
+                InvokeAsync(() =>
+                {
+                    messages.Add(message);
+                    StateHasChanged(); // Atualiza a tela
+                });
+            });
+
+            // Conecta ao Hub
+            await _hubConnection.StartAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Erro ao conectar no SignalR Hub: {ex.Message}");
+        }
+    }
+
+    private async Task<string> GetCookieAsync(string name)
+    {
+        // Chama o método JavaScript para obter o valor do cookie
+        return await jsruntime.InvokeAsync<string>("getCookie", name);
+    }
+
+    private async Task SendMessage()
+    {
+        if (_hubConnection != null && !string.IsNullOrEmpty(message))
+        {
+            try
+            {
+                // Obtém o token JWT do cookie
+                var token = await GetCookieAsync("authToken");
+
+                // Envia a mensagem e o token para o servidor
+                await _hubConnection.SendAsync("SendMessage", message, token);
+
+                // Atualiza a tela após o envio da mensagem
+                StateHasChanged();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erro ao enviar a mensagem: {ex.Message}");
+            }
+        }
+    }
+
+    private void OnEnterKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            SendMessage();
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        // Fecha a conexão SignalR ao sair do componente
+        if (_hubConnection is not null)
+        {
+            await _hubConnection.StopAsync();
+            await _hubConnection.DisposeAsync();
+        }
+    }
+}
