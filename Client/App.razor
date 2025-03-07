@@ -1,13 +1,10 @@
-﻿@inject NavigationManager navigation;
+﻿@inject NavigationManager navigation
+@inject AuthenticationStateProvider authStateProvider
 
 <CascadingAuthenticationState>
     <Router AppAssembly="@typeof(App).Assembly">
         <Found Context="routeData">
             <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
-                <NotAuthorized>
-                    <p>Você não está autorizado a acessar esta página.</p>
-                    <button @onclick="RedirectToLogin">Ir para o Login</button>
-                </NotAuthorized>
                 <Authorizing>
                     <p>Verificando autorização...</p>
                 </Authorizing>
@@ -24,8 +21,15 @@
 </CascadingAuthenticationState>
 
 @code {
-    private void RedirectToLogin()
+    protected override async Task OnInitializedAsync()
     {
-        navigation.NavigateTo("/login");
+        // Verifica a autenticação assim que a página for carregada
+        var authState = await authStateProvider.GetAuthenticationStateAsync();
+
+        // Se o usuário não estiver autenticado, redireciona para o login automaticamente
+        if (authState?.User?.Identity == null || !authState.User.Identity.IsAuthenticated)
+        {
+            navigation.NavigateTo("/login");  // O 'true' força o recarregamento da página
+        }
     }
 }

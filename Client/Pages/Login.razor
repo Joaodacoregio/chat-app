@@ -79,7 +79,7 @@
                     // Armazenar o token no cookie
                     await JSRuntime.InvokeVoidAsync("setCookie", "authToken", token, 1); // Expiração de 1 dia
 
-                    Navigation.NavigateTo("/chat",true);   
+                    Navigation.NavigateTo("/",true);   
   
                 }
                 else
