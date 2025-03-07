@@ -10,6 +10,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Data;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Options;
 
 namespace chatApp.Server.Controllers
 {
@@ -27,12 +28,31 @@ namespace chatApp.Server.Controllers
             _configuration = configuration;
         }
 
-        [HttpGet("protected")]
-        [Authorize]
-        public IActionResult GetProtectedData()
+
+        [HttpGet("check-auth")]
+        public IActionResult CheckAuth()
         {
-            return Ok(new { Message = "Você esta autenticado!" }); 
+            var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+ 
+
+            if (string.IsNullOrEmpty(token))
+            {
+                return Unauthorized(new { message = "Token não fornecido." });
+            }
+
+            // Ler o token
+            var handler = new JwtSecurityTokenHandler();
+            var jwtToken = handler.ReadJwtToken(token);
+
+            // Verifique a expiração
+            if (jwtToken.ValidTo < DateTime.UtcNow)
+            {
+                return Unauthorized(new { message = "Token expirado." });
+            }
+
+            return Ok(new { message = "Usuário autenticado." });
         }
+
 
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest model)

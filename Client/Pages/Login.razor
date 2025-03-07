@@ -76,15 +76,11 @@
  
                 if (!string.IsNullOrEmpty(token))
                 {
-                    // Adicionando um log no console para depuração
-                    Console.WriteLine($"Token obtido: {token}");
-
                     // Armazenar o token no cookie
                     await JSRuntime.InvokeVoidAsync("setCookie", "authToken", token, 1); // Expiração de 1 dia
 
-                    // Log para confirmar que o token foi armazenado
-                    Console.WriteLine("Token armazenado no cookie.");
-
+                    Navigation.NavigateTo("/chat",true);   
+  
                 }
                 else
                 {

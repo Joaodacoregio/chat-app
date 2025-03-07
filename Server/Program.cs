@@ -37,26 +37,6 @@ builder.Services.AddAuthentication(options =>
             Encoding.UTF8.GetBytes(secretKey) // Converte a chave secreta para um formato válido
         )
     };
-
-    // Evento para capturar o token do cookie e depuração
-    options.Events = new JwtBearerEvents
-    {
-        OnMessageReceived = context =>
-        {
-            // Obtém o token do cookie, se existir
-            var token = context.Request.Cookies["authToken"];
-            if (!string.IsNullOrEmpty(token))
-            {
-                context.Token = token;
-                Console.WriteLine($"[AUTH] Token recebido do cookie: {token.Substring(0, Math.Min(token.Length, 10))}..."); // Log para debug
-            }
-            else
-            {
-                Console.WriteLine("[AUTH] Nenhum token encontrado no cookie.");
-            }
-            return Task.CompletedTask;
-        }
-    };
 });
 
 // ========================== CONFIGURANDO CORS ========================== //
