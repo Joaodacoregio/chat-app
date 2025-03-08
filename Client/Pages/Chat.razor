@@ -10,28 +10,45 @@
 
 
 
-<div class="container d-flex flex-column vh-100">
-    <div class="chat-box h-50 overflow-auto p-3 border rounded bg-light d-flex flex-column">
-        <ul class="list-unstyled flex-grow-1 overflow-auto">
-            @foreach (var msg in messages)
+<div class="container-fluid d-flex">
+    <!-- Sidebar -->
+    <div class="sidebar bg-light p-3" style="height: 100vh; width: 250px; overflow-y: auto;">
+        <h4 class="text-center">Usuários Conectados</h4>
+        <ul class="list-unstyled">
+            @foreach (var user in connectedUsers)
             {
-                <li class="alert alert-secondary">@msg</li>
+                <li class="alert alert-secondary mb-2">@user</li>
             }
         </ul>
+    </div>
 
-        <div class="chat-input-box mt-auto w-100">
-            <div class="input-group">
-                <input type="text" class="form-control rounded-start p-3" style="height: 60px;" @bind="message" placeholder="Digite sua mensagem..." @onkeydown="OnEnterKeyDown" />
-                <button class="btn btn-primary rounded-end" style="height: 60px;" @onclick="SendMessage">Enviar</button>
+    <!-- Chat -->
+    <div class="container d-flex flex-column vh-100">
+        <div class="chat-box h-50 overflow-auto p-3 border rounded bg-light d-flex flex-column">
+            <ul class="list-unstyled flex-grow-1 overflow-auto">
+                @foreach (var msg in messages)
+                {
+                    <li class="alert alert-secondary">@msg</li>
+                }
+            </ul>
+
+            <div class="chat-input-box mt-auto w-100">
+                <div class="input-group">
+                    <input type="text" class="form-control rounded-start p-3" style="height: 60px;" @bind="message" placeholder="Digite sua mensagem..." @onkeydown="OnEnterKeyDown" />
+                    <button class="btn btn-primary rounded-end" style="height: 60px;" @onclick="SendMessage">Enviar</button>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
+
+
 @code {
     private string message = "";
-    private List<string> messages = new List<string>();
     private HubConnection? _hubConnection;
+    private List<string> connectedUsers = new List<string>();  
+    private List<string> messages = new List<string>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -41,6 +58,7 @@
                 .WithUrl("http://localhost:5026/chatHub")
                 .Build();
 
+            // Recebe a mensagem do servidor
             _hubConnection.On<string>("ReceiveMessage", (message) =>
             {
                 InvokeAsync(() =>
@@ -50,7 +68,46 @@
                 });
             });
 
+            // Isso é para todos os usuarios quando alguém se conecta
+            _hubConnection.On<List<string>>("ConnectedUsers", (users) =>
+            {
+                InvokeAsync(() =>
+                {
+                    // Limpa e adiciona cada usuário da lista "users" à lista de "connectedUsers"
+                    connectedUsers.Clear();
+                    connectedUsers.AddRange(users);  
+
+                    //Muda status
+                    StateHasChanged();
+                });
+            });
+
+            // Quando um novo usuario se conecta
+            _hubConnection.On<string>("UserConnected", (userName) =>
+            {
+                InvokeAsync(() =>
+                {
+                    // Adiciona o novo usuário à lista e atualiza
+                    connectedUsers.Add(userName);
+                    StateHasChanged();
+                });
+            });
+
+            // Recebe a notificação de desconexão de usuário
+            _hubConnection.On<string>("UserDisconnected", (userName) =>
+            {
+                InvokeAsync(() =>
+                {
+                    connectedUsers.Remove(userName);
+                    StateHasChanged();
+                });
+            });
+
+            //Pega o token do cookie
+            var token = await GetCookieAsync("authToken");
             await _hubConnection.StartAsync();
+            await _hubConnection.InvokeAsync("UserConnected", token); // Envia o token para o método do hub no back-end
+
         }
         catch (Exception ex)
         {
