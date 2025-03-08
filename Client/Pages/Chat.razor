@@ -3,22 +3,29 @@
 @inject NavigationManager Navigation
 @inject IJSRuntime jsruntime
 
+ 
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 
-<h1>Chat</h1>
+<h1 class="text-primary text-center" style="margin-bottom:2rem;">Chat</h1>
 
-<div>
-    <input @bind="message" placeholder="Digite sua mensagem..." @onkeydown="OnEnterKeyDown" />
-    <button @onclick="SendMessage">Enviar</button>
-</div>
 
-<div>
-    <h3>Mensagens:</h3>
-    <ul>
-        @foreach (var msg in messages)
-        {
-            <li>@msg</li>
-        }
-    </ul>
+
+<div class="container d-flex flex-column vh-100">
+    <div class="chat-box h-50 overflow-auto p-3 border rounded bg-light d-flex flex-column">
+        <ul class="list-unstyled flex-grow-1 overflow-auto">
+            @foreach (var msg in messages)
+            {
+                <li class="alert alert-secondary">@msg</li>
+            }
+        </ul>
+
+        <div class="chat-input-box mt-auto w-100">
+            <div class="input-group">
+                <input type="text" class="form-control rounded-start p-3" style="height: 60px;" @bind="message" placeholder="Digite sua mensagem..." @onkeydown="OnEnterKeyDown" />
+                <button class="btn btn-primary rounded-end" style="height: 60px;" @onclick="SendMessage">Enviar</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 @code {
@@ -30,22 +37,19 @@
     {
         try
         {
-            // Conecta ao SignalR Hub
             _hubConnection = new HubConnectionBuilder()
                 .WithUrl("http://localhost:5026/chatHub")
                 .Build();
 
-            // Método que recebe a mensagem do Hub e adiciona na lista
             _hubConnection.On<string>("ReceiveMessage", (message) =>
             {
                 InvokeAsync(() =>
                 {
                     messages.Add(message);
-                    StateHasChanged(); // Atualiza a tela
+                    StateHasChanged();
                 });
             });
 
-            // Conecta ao Hub
             await _hubConnection.StartAsync();
         }
         catch (Exception ex)
@@ -56,7 +60,6 @@
 
     private async Task<string> GetCookieAsync(string name)
     {
-        // Chama o método JavaScript para obter o valor do cookie
         return await jsruntime.InvokeAsync<string>("getCookie", name);
     }
 
@@ -66,13 +69,8 @@
         {
             try
             {
-                // Obtém o token JWT do cookie
                 var token = await GetCookieAsync("authToken");
-
-                // Envia a mensagem e o token para o servidor
                 await _hubConnection.SendAsync("SendMessage", message, token);
-
-                // Atualiza a tela após o envio da mensagem
                 StateHasChanged();
             }
             catch (Exception ex)
@@ -92,7 +90,6 @@
 
     public async ValueTask DisposeAsync()
     {
-        // Fecha a conexão SignalR ao sair do componente
         if (_hubConnection is not null)
         {
             await _hubConnection.StopAsync();
