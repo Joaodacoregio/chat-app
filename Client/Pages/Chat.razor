@@ -3,7 +3,7 @@
 @inject NavigationManager Navigation
 @inject IJSRuntime jsruntime
 
- 
+
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 
 <h1 class="text-primary text-center" style="margin-bottom:2rem;">Chat</h1>
@@ -71,6 +71,7 @@
             {
                 var token = await GetCookieAsync("authToken");
                 await _hubConnection.SendAsync("SendMessage", message, token);
+                message = "";
                 StateHasChanged();
             }
             catch (Exception ex)
