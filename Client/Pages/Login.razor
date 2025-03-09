@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="css/autenticationForm.css">
 </HeadContent>
 
- 
+
 
 <div class="login-container">
     <div class="login-header">
@@ -50,13 +50,26 @@
 @code {
     private LoginModel loginModel = new();
 
+    //Esse metodo é herdado e so começa quando o usuario entra na pagina e o DOM é carregado
+    protected override async Task OnInitializedAsync()
+    {
+        // Verifica se o token de autenticação já está presente no cookie
+        var token = await JSRuntime.InvokeAsync<string>("getCookie", "authToken");
+
+        if (!string.IsNullOrEmpty(token))
+        {
+            // Se o token existir, redireciona para a página de chat
+            Navigation.NavigateTo("/chat", true);
+        }
+    }
+
     private async Task HandleLogin()
     {
         var errorMessage = string.Empty;
 
         try
         {
- 
+
             var request = new HttpRequestMessage(HttpMethod.Post, "api/auth/login")
                 {
                     Content = JsonContent.Create(loginModel)  
@@ -64,24 +77,24 @@
 
             request.Headers.Add("Accept", "application/json");
 
- 
+
             var response = await Http.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
 
- 
+
             if (response.IsSuccessStatusCode)
             {
                 // Tenta desserializar o JSON para obter o token
                 var authResponse = await response.Content.ReadFromJsonAsync<AuthResponse>();
                 var token = authResponse?.Token;
 
- 
+
                 if (!string.IsNullOrEmpty(token))
                 {
                     // Armazenar o token no cookie
                     await JSRuntime.InvokeVoidAsync("setCookie", "authToken", token, 1); // Expiração de 1 dia
 
                     Navigation.NavigateTo("/chat",true);   
-  
+
                 }
                 else
                 {
@@ -112,8 +125,7 @@
             Console.WriteLine($"Mensagem de erro: {errorMessage}");
         }
     }
-
-
+ 
 
     public class AuthResponse
     {
