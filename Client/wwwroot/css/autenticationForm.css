@@ -1,18 +1,14 @@
 ﻿
 .login-container {
-    top: 5rem;
-    left: 35%;
-    width: 30%;
+    width: 100%;
     max-width: 600px;
-    position: absolute;
     padding: 30px;
     border-radius: 10px;
     background-color: #ffffff;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    margin: 0 auto;  
 }
-
-
 .login-header {
     text-align: left;
     margin-bottom: 20px;
@@ -104,3 +100,19 @@ hr {
         font-size: 16px;
         margin-right: 2px;
     }
+
+.login-footer {
+    text-align: center;
+    margin-top: 5%;
+}
+
+    .login-footer a {
+        color: #007bff;
+        text-decoration: none;
+    }
+
+        .login-footer a:hover {
+            text-decoration: underline;
+        }
+ 
+

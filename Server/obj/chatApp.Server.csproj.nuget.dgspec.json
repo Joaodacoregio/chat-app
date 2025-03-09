@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Joao\\desktop\\repos\\chat-app\\Server\\chatApp.Server.csproj": {}
+    "C:\\Users\\Joao\\Desktop\\repos\\chat-app\\Server\\chatApp.Server.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Joao\\desktop\\repos\\chat-app\\Server\\chatApp.Server.csproj": {
+    "C:\\Users\\Joao\\Desktop\\repos\\chat-app\\Server\\chatApp.Server.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Joao\\desktop\\repos\\chat-app\\Server\\chatApp.Server.csproj",
+        "projectUniqueName": "C:\\Users\\Joao\\Desktop\\repos\\chat-app\\Server\\chatApp.Server.csproj",
         "projectName": "chatApp.Server",
-        "projectPath": "C:\\Users\\Joao\\desktop\\repos\\chat-app\\Server\\chatApp.Server.csproj",
+        "projectPath": "C:\\Users\\Joao\\Desktop\\repos\\chat-app\\Server\\chatApp.Server.csproj",
         "packagesPath": "C:\\Users\\Joao\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Joao\\desktop\\repos\\chat-app\\Server\\obj\\",
+        "outputPath": "C:\\Users\\Joao\\Desktop\\repos\\chat-app\\Server\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

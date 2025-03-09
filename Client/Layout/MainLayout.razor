@@ -2,10 +2,14 @@
 @inject NavigationManager Navigation
 
 
-<div class="page">
-    <main>
-        <article class="content px-4">
-            @Body
-        </article>
+ 
+
+<div class="d-flex flex-column min-vh-100">
+    <NavMenu />
+
+    <main class="flex-grow-1 d-flex align-items-center justify-content-center">
+        @Body
     </main>
+
+    <Footer />
 </div>
