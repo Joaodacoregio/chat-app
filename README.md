@@ -6,21 +6,28 @@ Este é um projeto de chat em tempo real desenvolvido em C# utilizando WebSocket
 
 ## *Tecnologias Utilizadas*
 •C#
-•ASP.NET Core
+
+•ASP.NET Core + Blazor
+
 •WebSocket
+
 •Autenticação por Cookie e Token JWT
+
 •Hash nas senhas do usuario pelo back-end 
  
 
 ## *Fotos*
 
-Sistema de login
+### Sistema de login
 ![image](https://github.com/user-attachments/assets/9d0fefc9-8ac2-4974-84e1-e8810232afa7)
 
-Modais usando sweetalert2
+### Modais usando sweetalert2
 ![image](https://github.com/user-attachments/assets/629d8beb-4857-46e6-a785-794f1eefbf05)
 ![image](https://github.com/user-attachments/assets/3815a3ad-7ffb-4953-8861-392764c92425)
 
 
-Hash e dados detalhados
-![image](https://github.com/user-attachments/assets/15b19503-dc6c-4b2c-8229-91fc8543df8f)
+### Hash e dados detalhados
+![image](https://github.com/user-attachments/assets/f4bb8425-12d1-4e8f-af47-b7a00c9dc4ed)
+
+### Cookie + JWT
+![image](https://github.com/user-attachments/assets/469f56cc-a7cf-423b-a396-cf090e67508d)
