@@ -4,7 +4,7 @@
 
 Este é um projeto de chat em tempo real desenvolvido em C# utilizando WebSocket. A aplicação implementa um sistema de autenticação baseado em cookies e tokens para garantir a segurança das comunicações entre os usuários. Tanto o cliente como o servidor foram desenvolvidos por min.
 
-## *Tecnologias Utilizadas*
+## *Tecnologias , metodos e praticas utilizadas*
 •C#
 
 •ASP.NET Core + Blazor
