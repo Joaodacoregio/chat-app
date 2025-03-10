@@ -26,8 +26,9 @@ Este é um projeto de chat em tempo real desenvolvido em C# utilizando WebSocket
 ![image](https://github.com/user-attachments/assets/3815a3ad-7ffb-4953-8861-392764c92425)
 
 
-### Hash e dados detalhados
+### Hash e dados detalhados 
 ![image](https://github.com/user-attachments/assets/f4bb8425-12d1-4e8f-af47-b7a00c9dc4ed)
+ (Password , PasswordResetToken , PasswordConfirm)
 
 ### Chat
 ![image](https://github.com/user-attachments/assets/d5327611-bac9-42bc-894a-40cc40efba55)
