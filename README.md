@@ -31,3 +31,6 @@ Este é um projeto de chat em tempo real desenvolvido em C# utilizando WebSocket
 
 ### Cookie +  Token JWT
 ![image](https://github.com/user-attachments/assets/469f56cc-a7cf-423b-a396-cf090e67508d)
+
+### Chat
+![image](https://github.com/user-attachments/assets/d5327611-bac9-42bc-894a-40cc40efba55)
