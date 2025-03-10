@@ -11,7 +11,7 @@ Este é um projeto de chat em tempo real desenvolvido em C# utilizando WebSocket
 
 •WebSocket
 
-•Autenticação por Cookie e Token JWT
+•Autenticação por Cookie e Token JWT 
 
 •Hash nas senhas do usuario pelo back-end 
  
@@ -29,7 +29,7 @@ Este é um projeto de chat em tempo real desenvolvido em C# utilizando WebSocket
 ### Hash e dados detalhados
 ![image](https://github.com/user-attachments/assets/f4bb8425-12d1-4e8f-af47-b7a00c9dc4ed)
 
-### Cookie +  Token JWT
+### Cookie +  Token JWT (Autenticação)
 ![image](https://github.com/user-attachments/assets/469f56cc-a7cf-423b-a396-cf090e67508d)
 
 ### Chat
