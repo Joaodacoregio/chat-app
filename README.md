@@ -9,7 +9,7 @@ Este é um projeto de chat em tempo real desenvolvido em C# utilizando WebSocket
 
 •ASP.NET Core + Blazor
 
-•WebSocket
+•WebSocket (usei SignalR)
 
 •Autenticação por Cookie e Token JWT 
 
