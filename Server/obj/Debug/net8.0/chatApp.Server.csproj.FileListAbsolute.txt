@@ -492,3 +492,12 @@ C:\Users\Joao\Desktop\repos\chat-app\Server\obj\Debug\net8.0\refint\chatApp.Serv
 C:\Users\Joao\Desktop\repos\chat-app\Server\obj\Debug\net8.0\chatApp.Server.pdb
 C:\Users\Joao\Desktop\repos\chat-app\Server\obj\Debug\net8.0\chatApp.Server.genruntimeconfig.cache
 C:\Users\Joao\Desktop\repos\chat-app\Server\obj\Debug\net8.0\ref\chatApp.Server.dll
+C:\Users\MarinaJoao\source\repos\chat-app\Server\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\MarinaJoao\source\repos\chat-app\Server\bin\Debug\net8.0\Microsoft.Bcl.Memory.dll
+C:\Users\MarinaJoao\source\repos\chat-app\Server\bin\Debug\net8.0\Microsoft.IdentityModel.Abstractions.dll
+C:\Users\MarinaJoao\source\repos\chat-app\Server\bin\Debug\net8.0\Microsoft.IdentityModel.JsonWebTokens.dll
+C:\Users\MarinaJoao\source\repos\chat-app\Server\bin\Debug\net8.0\Microsoft.IdentityModel.Logging.dll
+C:\Users\MarinaJoao\source\repos\chat-app\Server\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.dll
+C:\Users\MarinaJoao\source\repos\chat-app\Server\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+C:\Users\MarinaJoao\source\repos\chat-app\Server\bin\Debug\net8.0\Microsoft.IdentityModel.Tokens.dll
+C:\Users\MarinaJoao\source\repos\chat-app\Server\bin\Debug\net8.0\System.IdentityModel.Tokens.Jwt.dll
