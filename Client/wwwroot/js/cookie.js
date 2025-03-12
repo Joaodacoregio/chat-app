@@ -2,9 +2,8 @@
     var d = new Date();
     d.setTime(d.getTime() + (days * 24 * 60 * 60 * 1000)); // Expiração em dias
     var expires = "expires=" + d.toUTCString();
-    document.cookie = name + "=" + value + ";" + expires + ";path=/;secure;samesite=lax";
+    document.cookie = name + "=" + value + ";" + expires + ";path=/;domain=192.168.1.162;samesite=lax";
 };
-
 
 function getCookie(name) {
     const value = `; ${document.cookie}`;

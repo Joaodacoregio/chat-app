@@ -9,12 +9,16 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
+ 
+
+
 // Configuração do HttpClient para permitir envio de cookies
 builder.Services.AddScoped(sp =>
 {
     var client = new HttpClient
     {
-        BaseAddress = new Uri("http://localhost:5026")
+        BaseAddress = new Uri("http://192.168.1.162:5000/") // Backend na porta 5000
+
     };
 
     // Garantir que os cookies sejam enviados nas requisições

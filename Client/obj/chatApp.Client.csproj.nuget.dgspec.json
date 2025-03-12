@@ -1,20 +1,24 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\MarinaJoao\\source\\repos\\chat-app\\Client\\chatApp.Client.csproj": {}
+    "C:\\Users\\joao.vitor\\source\\repos\\Joaodacoregio\\chat-app\\Client\\chatApp.Client.csproj": {}
   },
   "projects": {
-    "C:\\Users\\MarinaJoao\\source\\repos\\chat-app\\Client\\chatApp.Client.csproj": {
+    "C:\\Users\\joao.vitor\\source\\repos\\Joaodacoregio\\chat-app\\Client\\chatApp.Client.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\MarinaJoao\\source\\repos\\chat-app\\Client\\chatApp.Client.csproj",
+        "projectUniqueName": "C:\\Users\\joao.vitor\\source\\repos\\Joaodacoregio\\chat-app\\Client\\chatApp.Client.csproj",
         "projectName": "chatApp.Client",
-        "projectPath": "C:\\Users\\MarinaJoao\\source\\repos\\chat-app\\Client\\chatApp.Client.csproj",
-        "packagesPath": "C:\\Users\\MarinaJoao\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\MarinaJoao\\source\\repos\\chat-app\\Client\\obj\\",
+        "projectPath": "C:\\Users\\joao.vitor\\source\\repos\\Joaodacoregio\\chat-app\\Client\\chatApp.Client.csproj",
+        "packagesPath": "C:\\Users\\joao.vitor\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\joao.vitor\\source\\repos\\Joaodacoregio\\chat-app\\Client\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "C:\\Users\\MarinaJoao\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\joao.vitor\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -22,6 +26,7 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -39,7 +44,8 @@
           "enableAudit": "true",
           "auditLevel": "low",
           "auditMode": "direct"
-        }
+        },
+        "SdkAnalysisLevel": "9.0.200"
       },
       "frameworks": {
         "net8.0": {
@@ -69,13 +75,13 @@
             "Microsoft.NET.ILLink.Tasks": {
               "suppressParent": "All",
               "target": "Package",
-              "version": "[8.0.10, )",
+              "version": "[8.0.14, )",
               "autoReferenced": true
             },
             "Microsoft.NET.Sdk.WebAssembly.Pack": {
               "suppressParent": "All",
               "target": "Package",
-              "version": "[8.0.10, )",
+              "version": "[9.0.3, )",
               "autoReferenced": true
             },
             "System.Diagnostics.DiagnosticSource": {
@@ -97,7 +103,7 @@
           "downloadDependencies": [
             {
               "name": "Microsoft.NETCore.App.Runtime.Mono.browser-wasm",
-              "version": "[8.0.10, 8.0.10]"
+              "version": "[8.0.14, 8.0.14]"
             }
           ],
           "frameworkReferences": {
@@ -105,7 +111,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.403/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.201/PortableRuntimeIdentifierGraph.json"
         }
       },
       "runtimes": {

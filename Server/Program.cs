@@ -46,12 +46,20 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
     {
-        policy.WithOrigins("http://localhost:5127") // URL do frontend
+        policy.WithOrigins("http://192.168.1.162:5001") // URL do frontend
               .AllowCredentials() // Permite envio de cookies
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
 });
+
+// ======================================================= //
+
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.ListenAnyIP(5000); // Porta 5000 disponível na rede
+});
+
 
 // ========================== CONFIGURANDO SERVIÇOS ========================== //
 builder.Services.AddControllers();
@@ -80,7 +88,10 @@ if (app.Environment.IsDevelopment())
 
 //==========   Configura o SignalR no pipeline de middleware =============================//
 
-app.MapHub<ChatHub>("/chatHub");  
-
+app.MapHub<ChatHub>("/chatHub");
+ 
 // ========================== INICIANDO A APLICAÇÃO ========================== //
+
+app.MapGet("/", () => "App rodando!");
+
 app.Run();
