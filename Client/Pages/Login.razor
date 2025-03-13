@@ -96,6 +96,15 @@
 
                     Console.WriteLine(token);
 
+                    await JSRuntime.InvokeVoidAsync("Swal.fire", new
+                    {
+                        title = "Usuário autenticado!",
+                        text = "Login realizado com sucesso.",
+                        icon = "success",
+                        timer = 1500, // 1.5 segundos
+                        showConfirmButton = false
+                    });
+
 
                     Navigation.NavigateTo("/chat",true);   
 
@@ -109,10 +118,27 @@
             }
             else
             {
-                // Caso a resposta seja um erro, lê o conteúdo de erro
-                var errorContent = await response.Content.ReadAsStringAsync();
-                errorMessage = $"Erro no login: {response.StatusCode} - {errorContent}";
-                Console.WriteLine(errorMessage);
+                // Exibir alerta de erro com SweetAlert2
+                await JSRuntime.InvokeVoidAsync("Swal.fire", new
+                {
+                    title = "Erro!",
+                    text = "Senha incorreta. Tente novamente.",
+                    icon = "error",
+                    confirmButtonText = "OK"
+                });
+
+                // Se a resposta do servidor contiver um erro, captura o conteúdo
+                if (response != null)
+                {
+                    var errorContent = await response.Content.ReadAsStringAsync();
+                    errorMessage = $"Erro no login: {response.StatusCode} - {errorContent}";
+                    Console.WriteLine(errorMessage);
+                }
+                else
+                {
+                    errorMessage = "Erro desconhecido ao tentar fazer login.";
+                    Console.WriteLine(errorMessage);
+                }
             }
         }
         catch (Exception ex)
