@@ -3,7 +3,7 @@ using chatApp.Server.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using WebSocketChat.Hubs;
+using chatApp.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 

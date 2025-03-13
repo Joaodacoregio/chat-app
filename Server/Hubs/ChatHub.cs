@@ -1,16 +1,21 @@
-﻿using chatApp.Server.Models;
+﻿using chatApp.Server.Data;
+using chatApp.Server.Models.message;
 using Microsoft.AspNetCore.SignalR;
-using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace WebSocketChat.Hubs
+
+namespace chatApp.Hubs
 {
     public class ChatHub : Hub
     {
+        private readonly AppDbContext _dbContext;  
         private static Dictionary<string, string> _userConnections = new Dictionary<string, string>();
+
+        public ChatHub(AppDbContext dbContext)
+        {
+            _dbContext = dbContext;
+        }
 
 
         public async Task SendMessage(string message, string token)
@@ -18,6 +23,16 @@ namespace WebSocketChat.Hubs
             var user = DecodeJwtToken(token);
 
             var userName = user?.Identity?.Name ?? "Usuário Desconhecido"; // Caso não haja nome, usa um nome padrão
+
+            // Salvar a mensagem no banco de dados
+            var newMessage = new Message
+            {
+                UserName = userName,
+                Content = message,
+                Timestamp = DateTime.UtcNow
+            };
+            _dbContext.Messages.Add(newMessage);
+            await _dbContext.SaveChangesAsync();
 
             // Enviar a mensagem para todos os clientes conectados
             await Clients.All.SendAsync("ReceiveMessage", $"{userName}: {message}");
@@ -52,6 +67,14 @@ namespace WebSocketChat.Hubs
 
             // Envia a lista de usuários conectados para o novo usuário
             await Clients.Caller.SendAsync("ConnectedUsers", connectedUsers);  // Envia a lista para o novo usuário
+
+            // Enviar o histórico de mensagens para o usuário que acabou de se conectar
+            var pastMessages = _dbContext.Messages
+                .OrderBy(m => m.Timestamp)
+                .Select(m => $"{m.UserName}: {m.Content}")
+                .ToList();
+
+            await Clients.Caller.SendAsync("ReceivePastMessages", pastMessages);
         }
 
         // Quando um usuário se desconecta

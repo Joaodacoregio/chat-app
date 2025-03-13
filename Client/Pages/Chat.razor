@@ -11,7 +11,7 @@
         <!-- Botão Dropdown -->
         <div class="dropdown position-absolute" style="top: 10px; right: 10px; z-index: 1050;">
             <button class="btn btn-primary" @onclick="ToggleUsersList">
-                &#9776;
+                ☰
             </button>
         </div>
 
@@ -21,7 +21,7 @@
             <ul class="list-unstyled mb-0">
                 @foreach (var user in connectedUsers)
                 {
-                        <li class="alert alert-secondary mb-2">@user</li>
+                    <li class="alert alert-secondary mb-2">@user</li>
                 }
             </ul>
         </div>
@@ -29,7 +29,7 @@
         <ul class="list-unstyled flex-grow-1 overflow-auto">
             @foreach (var msg in messages)
             {
-                    <li class="alert alert-secondary">@msg</li>
+                <li class="alert alert-secondary">@msg</li>
             }
         </ul>
 
@@ -47,7 +47,7 @@
     private HubConnection? _hubConnection;
     private List<string> connectedUsers = new List<string>();
     private List<string> messages = new List<string>();
-    private bool isUsersListVisible = false; // Controle para visibilidade da lista de usuários
+    private bool isUsersListVisible = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -57,6 +57,7 @@
                 .WithUrl("http://192.168.1.162:5000/chatHub")
                 .Build();
 
+            // Receber mensagens em tempo real
             _hubConnection.On<string>("ReceiveMessage", (message) =>
             {
                 InvokeAsync(() =>
@@ -66,6 +67,18 @@
                 });
             });
 
+            // Receber o histórico de mensagens ao conectar
+            _hubConnection.On<List<string>>("ReceivePastMessages", (pastMessages) =>
+            {
+                InvokeAsync(() =>
+                {
+                    messages.Clear(); 
+                    messages.AddRange(pastMessages); 
+                    StateHasChanged();
+                });
+            });
+
+            // Receber lista de usuários conectados
             _hubConnection.On<List<string>>("ConnectedUsers", (users) =>
             {
                 InvokeAsync(() =>
