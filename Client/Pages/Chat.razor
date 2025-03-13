@@ -21,6 +21,7 @@
             {
                 <li class="alert alert-secondary mb-2">@user</li>
             }
+            <button class="btn btn-outline-danger" @onclick="SignOut">Sign Out</button>
         </ul>
     </div>
 
@@ -179,4 +180,11 @@
             await _hubConnection.DisposeAsync();
         }
     }
+
+      private async Task SignOut()
+    {
+        await jsruntime.InvokeVoidAsync("removeCookie", "authToken");
+        Navigation.NavigateTo("/login");
+    }
+
 }
