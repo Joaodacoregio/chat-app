@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 
 
-
+//Essa classe é desnecessaria , eu fiz ela apenas para brincar com interface
 namespace chatApp.Server.Data
 {
     public interface IAppDbContext

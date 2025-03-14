@@ -22,34 +22,60 @@ namespace chatApp.Hubs
             var user = DecodeJwtToken(token);
             var userName = user?.Identity?.Name ?? "Usuário Desconhecido";
 
+            // Obter o ID do usuário a partir do claim NameIdentifier
+            var userIdString = user?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            // Tentar converter o userId para int
+            if (!int.TryParse(userIdString, out int userId))
+            {
+                // Se a conversão falhar, podemos definir um valor padrão ou lançar uma exceção
+                userId = -1;  // Definir -1 ou qualquer valor que seja considerado inválido
+            }
+
             // Salvar a mensagem no banco de dados
             var newMessage = new Message
             {
+                UserId = userId,         
                 UserName = userName,
                 Content = message,
                 Timestamp = DateTime.UtcNow
             };
+
+            // Adicionar a nova mensagem ao contexto
             _dbContext.Messages.Add(newMessage);
             await _dbContext.SaveChangesAsync();
 
-            // Biblioteca para JSON Newtonsoft
+            // Biblioteca para JSON (Newtonsoft)
             var messageData = JsonConvert.SerializeObject(new
             {
                 userName = userName,
                 content = message,
                 timestamp = newMessage.Timestamp.ToString("yyyy-MM-dd HH:mm:ss")
             });
+
             // Enviar a mensagem como JSON para todos os clientes conectados
             await Clients.All.SendAsync("ReceiveMessage", messageData);
         }
+
 
         private ClaimsPrincipal DecodeJwtToken(string token)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var jwtToken = tokenHandler.ReadJwtToken(token);
+
             var userName = jwtToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value ?? "Usuário Desconhecido";
-            return new ClaimsPrincipal(new ClaimsIdentity(jwtToken.Claims));
+            var userId = jwtToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "ID Desconhecido";
+
+            var claims = jwtToken.Claims.Concat(new[]
+            {
+                 new Claim(ClaimTypes.Name, userName),
+                 new Claim(ClaimTypes.NameIdentifier, userId)
+            });
+
+            // Criando e retornando o ClaimsPrincipal
+            return new ClaimsPrincipal(new ClaimsIdentity(claims));
         }
+
 
         public async Task UserConnected(string token)
         {

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using chatApp.Server.Data;
 
@@ -10,9 +11,11 @@ using chatApp.Server.Data;
 namespace chatApp.Server.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250314184259_UsersWithMessages1")]
+    partial class UsersWithMessages1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.2");
@@ -101,11 +104,13 @@ namespace chatApp.Server.Migrations
 
             modelBuilder.Entity("chatApp.Server.Models.Message", b =>
                 {
-                    b.HasOne("chatApp.Server.Models.User", null)
+                    b.HasOne("chatApp.Server.Models.User", "User")
                         .WithMany("Messages")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("chatApp.Server.Models.User", b =>

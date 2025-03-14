@@ -1,10 +1,16 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace chatApp.Server.Models
 {
     public class User
     {
  
+        public User()
+        {
+            Messages = new Collection<Message>();
+        }
+
         [Key]
         public int Id { get; set; }
 
@@ -49,5 +55,7 @@ namespace chatApp.Server.Models
         [StringLength(20)]
         public string Role { get; set; } = "User"; // Todos são usuarios para garantir segurança 
         //ADM vai ser definido apenas fornçando comando na DB
+
+        public ICollection<Message> Messages { get; set; } // Relacionamento 1:N com a tabela de mensagens
     }
 }
