@@ -41,7 +41,8 @@ namespace chatApp.Server.Controllers
             var handler = new JwtSecurityTokenHandler();
             var jwtToken = handler.ReadJwtToken(token);
 
-            // TODO:MELHORAR A VERIFICAÇÃO POIS EXISTE UMA FALHA DE SEGURANÇA
+            // TODO:MELHORAR A VERIFICAÇÃO POIS EXISTE UMA POSSIVEL FALHA DE SEGURANÇA
+            // Usuario poderia simular um token?
             if (jwtToken.ValidTo < DateTime.UtcNow)
             {
                 return Unauthorized(new { message = "Token expirado." });

@@ -1,20 +1,22 @@
 ﻿@page "/chat"
 @attribute [Authorize]
 @inject NavigationManager Navigation
-@inject IJSRuntime jsruntime
+@inject IJSRuntime JSRuntime
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 
-<div class="chat-box p-3 border rounded bg-light d-flex flex-column position-relative" style="width:75vh; height: 70vh;">
+<HeadContent>
+    <link rel="stylesheet" href="css/message.css">
+</HeadContent>
+
+<div class="chat-box">
     <!-- Botão Dropdown -->
     <div class="dropdown position-absolute" style="top: 10px; right: 10px; z-index: 1050;">
-        <button class="btn btn-primary" @onclick="ToggleUsersList">
-            ☰
-        </button>
+        <button class="btn btn-primary" @onclick="ToggleUsersList">☰</button>
     </div>
 
     <!-- Box de Informações -->
-    <div class="info-box bg-light border rounded p-3 position-absolute" style="display: @(isUsersListVisible ? "block" : "none"); width: 400px; height: 400px; top: 50px; right: 10px; overflow-y: auto; z-index: 1040;">
+    <div class="info-box">
         <h5 class="text-center">Connected Users</h5>
         <ul class="list-unstyled mb-0">
             @foreach (var user in connectedUsers)
@@ -26,13 +28,23 @@
     </div>
 
     <ul class="list-unstyled flex-grow-1 overflow-auto" @ref="chatBoxRef">
-        @foreach (var msg in messages)
+        @if (messages.Count == 0)
         {
-            <li class="alert alert-secondary">@msg</li>
+            <li class="alert alert-info">Nenhuma mensagem ainda.</li>
+        }
+        else
+        {
+            @foreach (var msg in messages)
+            {
+                <li class="@(msg.userName == currentUserName ? "alert message-current-user mb-2" : "alert message-other-user mb-2")">
+                    <span>@($"{msg.userName}: {msg.content}")</span>
+                    <div class="message-timestamp">@msg.timestamp</div>
+                </li>
+            }
         }
     </ul>
 
-    <div class="chat-input-box mt-auto w-100">
+    <div class="chat-input-box">
         <div class="input-group">
             <input type="text" class="form-control rounded-start p-3" style="height: 60px;" @bind="message" placeholder="Type your message..." @onkeydown="OnEnterKeyDown" />
             <button class="btn btn-primary rounded-end" style="height: 60px;" @onclick="SendMessage">Send</button>
@@ -44,9 +56,18 @@
     private string message = "";
     private HubConnection? _hubConnection;
     private List<string> connectedUsers = new List<string>();
-    private List<string> messages = new List<string>();
+    private List<MessageData> messages = new List<MessageData>();
     private bool isUsersListVisible = false;
-    private ElementReference chatBoxRef; // Reference to the chat box div
+    private ElementReference chatBoxRef;
+    private string currentUserName = ""; 
+
+    // Classe que eu usei para representar o JSON
+    private class MessageData
+    {
+        public string userName { get; set; } = "";
+        public string content { get; set; } = "";
+        public string timestamp { get; set; } = "";
+    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -56,32 +77,35 @@
                 .WithUrl("http://192.168.1.162:5000/chatHub")
                 .Build();
 
-            // Receive real-time messages
-            _hubConnection.On<string>("ReceiveMessage", (message) =>
+            // Receber mensagens em tempo real
+            _hubConnection.On<string>("ReceiveMessage", (messageJson) =>
             {
+                var msg = System.Text.Json.JsonSerializer.Deserialize<MessageData>(messageJson);
                 InvokeAsync(async () =>
                 {
-                    messages.Add(message);
+                    messages.Add(msg);
                     StateHasChanged();
-                    await ScrollToBottom(); // Scroll to bottom when a new message is received
+                    await ScrollToBottom();
                 });
             });
 
-            // Receive message history when connecting
-            _hubConnection.On<List<string>>("ReceivePastMessages", (pastMessages) =>
+            // Receber histórico de mensagens
+            _hubConnection.On<string>("ReceivePastMessages", (pastMessagesJson) =>
             {
+                var pastMessages = System.Text.Json.JsonSerializer.Deserialize<List<MessageData>>(pastMessagesJson);
                 InvokeAsync(async () =>
                 {
                     messages.Clear();
                     messages.AddRange(pastMessages);
                     StateHasChanged();
-                    await ScrollToBottom(); // Scroll to bottom after loading past messages
+                    await ScrollToBottom();
                 });
             });
 
-            // Receive connected users list
-            _hubConnection.On<List<string>>("ConnectedUsers", (users) =>
+            // Receber lista de usuários conectados
+            _hubConnection.On<string>("ConnectedUsers", (usersJson) =>
             {
+                var users = System.Text.Json.JsonSerializer.Deserialize<List<string>>(usersJson);
                 InvokeAsync(() =>
                 {
                     connectedUsers.Clear();
@@ -90,8 +114,18 @@
                 });
             });
 
-            _hubConnection.On<string>("UserConnected", (userName) =>
+            _hubConnection.On<string>("SetCurrentUser", (userName) =>
             {
+                currentUserName = userName;
+                StateHasChanged();
+            });
+
+
+            // Novo usuário conectado
+            _hubConnection.On<string>("UserConnected", (userJson) =>
+            {
+                var data = System.Text.Json.JsonSerializer.Deserialize<dynamic>(userJson);
+                string userName = data.userName;
                 InvokeAsync(() =>
                 {
                     connectedUsers.Add(userName);
@@ -99,8 +133,11 @@
                 });
             });
 
-            _hubConnection.On<string>("UserDisconnected", (userName) =>
+            // Usuário desconectado
+            _hubConnection.On<string>("UserDisconnected", (userJson) =>
             {
+                var data = System.Text.Json.JsonSerializer.Deserialize<dynamic>(userJson);
+                string userName = data.userName;
                 InvokeAsync(() =>
                 {
                     connectedUsers.Remove(userName);
@@ -108,6 +145,7 @@
                 });
             });
 
+            // Obter o token e decodificar o nome do usuário atual
             var token = await GetCookieAsync("authToken");
             await _hubConnection.StartAsync();
             await _hubConnection.InvokeAsync("UserConnected", token);
@@ -118,9 +156,11 @@
         }
     }
 
+  
+
     private async Task<string> GetCookieAsync(string name)
     {
-        return await jsruntime.InvokeAsync<string>("getCookie", name);
+        return await JSRuntime.InvokeAsync<string>("getCookie", name);
     }
 
     private async Task SendMessage()
@@ -133,7 +173,7 @@
                 await _hubConnection.SendAsync("SendMessage", message, token);
                 message = "";
                 StateHasChanged();
-                await ScrollToBottom();  
+                await ScrollToBottom();
             }
             catch (Exception ex)
             {
@@ -156,15 +196,12 @@
         StateHasChanged();
     }
 
-
     private async Task ScrollToBottom()
     {
         await Task.Delay(1);
-        Console.WriteLine("Attempting to scroll...");
         try
         {
-            await jsruntime.InvokeVoidAsync("scrollToBottom", chatBoxRef);
-            Console.WriteLine("Scroll command sent.");
+            await JSRuntime.InvokeVoidAsync("scrollToBottom", chatBoxRef);
         }
         catch (Exception ex)
         {
@@ -181,10 +218,9 @@
         }
     }
 
-      private async Task SignOut()
+    private async Task SignOut()
     {
-        await jsruntime.InvokeVoidAsync("removeCookie", "authToken");
+        await JSRuntime.InvokeVoidAsync("removeCookie", "authToken");
         Navigation.NavigateTo("/login");
     }
-
 }

@@ -22,6 +22,7 @@ namespace chatApp.Server.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] JsonElement data)
         {
+            //Melhoria com JSON
             string? email = data.GetProperty("Email").GetString();
             string? password = data.GetProperty("Password").GetString();
             string? nickname = data.GetProperty("Nickname").GetString();

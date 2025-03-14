@@ -3,13 +3,13 @@ using chatApp.Server.Models;
 using Microsoft.AspNetCore.SignalR;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-
+using Newtonsoft.Json;
 
 namespace chatApp.Hubs
 {
     public class ChatHub : Hub
     {
-        private readonly IAppDbContext _dbContext;  
+        private readonly IAppDbContext _dbContext;
         private static Dictionary<string, string> _userConnections = new Dictionary<string, string>();
 
         public ChatHub(IAppDbContext dbContext)
@@ -17,12 +17,10 @@ namespace chatApp.Hubs
             _dbContext = dbContext;
         }
 
-
         public async Task SendMessage(string message, string token)
         {
             var user = DecodeJwtToken(token);
-
-            var userName = user?.Identity?.Name ?? "Usuário Desconhecido"; // Caso não haja nome, usa um nome padrão
+            var userName = user?.Identity?.Name ?? "Usuário Desconhecido";
 
             // Salvar a mensagem no banco de dados
             var newMessage = new Message
@@ -34,63 +32,70 @@ namespace chatApp.Hubs
             _dbContext.Messages.Add(newMessage);
             await _dbContext.SaveChangesAsync();
 
-            // Enviar a mensagem para todos os clientes conectados
-            await Clients.All.SendAsync("ReceiveMessage", $"{userName}: {message}");
+            // Biblioteca para JSON Newtonsoft
+            var messageData = JsonConvert.SerializeObject(new
+            {
+                userName = userName,
+                content = message,
+                timestamp = newMessage.Timestamp.ToString("yyyy-MM-dd HH:mm:ss")
+            });
+            // Enviar a mensagem como JSON para todos os clientes conectados
+            await Clients.All.SendAsync("ReceiveMessage", messageData);
         }
 
-        // Método para decodificar e validar o token JWT
         private ClaimsPrincipal DecodeJwtToken(string token)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-
             var jwtToken = tokenHandler.ReadJwtToken(token);
-
-            //Se o nome não existir o usuario é desconhecido 
             var userName = jwtToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value ?? "Usuário Desconhecido";
-
             return new ClaimsPrincipal(new ClaimsIdentity(jwtToken.Claims));
         }
 
-
-        // Quando um usuário se conecta
         public async Task UserConnected(string token)
         {
-            var user = DecodeJwtToken(token);  // Decodificando o token e pegando o nome do usuário
-            string userName = user?.Identity?.Name ?? "Usuário Desconhecido";  // Nome do usuário ou "Usuário Desconhecido"
+            var user = DecodeJwtToken(token);
+            string userName = user?.Identity?.Name ?? "Usuário Desconhecido";
 
-            // Adiciona o novo usuário na lista
             _userConnections[Context.ConnectionId] = userName;
 
-            // Envia para todos os clientes (inclusive o novo) a lista atualizada de usuários conectados
-            var connectedUsers = _userConnections.Values.ToList();
-            await Clients.All.SendAsync("UserConnected", userName);  // Notifica todos sobre o novo usuário
+            // Enviar JSON com o nome do usuário conectado
+            var userConnectedData = JsonConvert.SerializeObject(new { userName });
+            await Clients.All.SendAsync("UserConnected", userConnectedData);
 
-            // Envia a lista de usuários conectados para o novo usuário
-            await Clients.Caller.SendAsync("ConnectedUsers", connectedUsers);  // Envia a lista para o novo usuário
+            // Enviar o nome do usuário atual ao cliente
+            await Clients.Caller.SendAsync("SetCurrentUser", userName);
 
-            // Enviar o histórico de mensagens para o usuário que acabou de se conectar
+            // Enviar lista de usuários conectados como JSON
+            var connectedUsers = JsonConvert.SerializeObject(_userConnections.Values.ToList());
+            await Clients.Caller.SendAsync("ConnectedUsers", connectedUsers);
+
+            // Enviar histórico de mensagens como JSON
             var pastMessages = _dbContext.Messages
                 .OrderBy(m => m.Timestamp)
-                .Select(m => $"{m.UserName}: {m.Content}")
+                .Select(m => new
+                {
+                    userName = m.UserName,
+                    content = m.Content,
+                    timestamp = m.Timestamp.ToString("yyyy-MM-dd HH:mm:ss")
+                })
                 .ToList();
 
-            await Clients.Caller.SendAsync("ReceivePastMessages", pastMessages);
+            var pastMessagesJson = JsonConvert.SerializeObject(pastMessages);
+            await Clients.Caller.SendAsync("ReceivePastMessages", pastMessagesJson);
         }
 
-        // Quando um usuário se desconecta
         public override async Task OnDisconnectedAsync(Exception exception)
         {
             if (_userConnections.ContainsKey(Context.ConnectionId))
             {
                 var userName = _userConnections[Context.ConnectionId];
-                _userConnections.Remove(Context.ConnectionId);  // Remove o usuário desconectado
+                _userConnections.Remove(Context.ConnectionId);
 
-                // Notifica todos os outros clientes sobre a desconexão
-                await Clients.All.SendAsync("UserDisconnected", userName);
+                // Enviar JSON com o nome do usuário desconectado
+                var userDisconnectedData = JsonConvert.SerializeObject(new { userName });
+                await Clients.All.SendAsync("UserDisconnected", userDisconnectedData);
             }
-
             await base.OnDisconnectedAsync(exception);
         }
-
     }
 }
