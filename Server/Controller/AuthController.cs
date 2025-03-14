@@ -24,7 +24,7 @@ namespace chatApp.Server.Controllers
         //Então não é necessário adicioná-lo manualmente com builder.Services.AddSingleton<IConfiguration,Configuration>
         private readonly IConfiguration _configuration;  
 
-        public AuthController(AppDbContext context, IConfiguration configuration)
+        public AuthController(IAppDbContext context, IConfiguration configuration)
         {
             _context = context;
             _configuration = configuration;

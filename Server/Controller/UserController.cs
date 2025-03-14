@@ -13,7 +13,7 @@ namespace chatApp.Server.Controllers
     {
         private readonly IAppDbContext _context;
 
-        public UserController(AppDbContext context)
+        public UserController(IAppDbContext context)
         {
             _context = context;
         }
