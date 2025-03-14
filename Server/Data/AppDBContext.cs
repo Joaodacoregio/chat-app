@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using chatApp.Server.Models;
-using chatApp.Server.Models.message;
+
 
 namespace chatApp.Server.Data
 {

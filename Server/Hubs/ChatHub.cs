@@ -1,5 +1,5 @@
 ﻿using chatApp.Server.Data;
-using chatApp.Server.Models.message;
+using chatApp.Server.Models;
 using Microsoft.AspNetCore.SignalR;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -9,10 +9,10 @@ namespace chatApp.Hubs
 {
     public class ChatHub : Hub
     {
-        private readonly AppDbContext _dbContext;  
+        private readonly IAppDbContext _dbContext;  
         private static Dictionary<string, string> _userConnections = new Dictionary<string, string>();
 
-        public ChatHub(AppDbContext dbContext)
+        public ChatHub(IAppDbContext dbContext)
         {
             _dbContext = dbContext;
         }

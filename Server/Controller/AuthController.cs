@@ -5,12 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.Data;
 using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
-using System.Net;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using System.Data;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.Extensions.Options;
 
 namespace chatApp.Server.Controllers
 {
@@ -20,8 +16,7 @@ namespace chatApp.Server.Controllers
     {
         private readonly IAppDbContext _context;
 
-        //IConfiguration já é registrado automaticamente pelo WebApplication.CreateBuilder(args);,
-        //Então não é necessário adicioná-lo manualmente com builder.Services.AddSingleton<IConfiguration,Configuration>
+        //Ja é registrado automaticamente 
         private readonly IConfiguration _configuration;  
 
         public AuthController(IAppDbContext context, IConfiguration configuration)

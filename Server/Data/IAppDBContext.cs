@@ -1,5 +1,4 @@
-﻿using chatApp.Server.Models.message;
-using chatApp.Server.Models;
+﻿using chatApp.Server.Models;
 using Microsoft.EntityFrameworkCore;
 
 

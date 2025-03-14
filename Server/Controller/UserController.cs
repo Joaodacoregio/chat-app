@@ -2,7 +2,8 @@
 using chatApp.Server.Data;  // Acesse seu contexto de dados
 using chatApp.Server.Models; // Para o modelo de dados de usuário
 using Microsoft.EntityFrameworkCore;
- 
+using System.Text.Json;
+
 
 namespace chatApp.Server.Controllers
 {
@@ -11,36 +12,42 @@ namespace chatApp.Server.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
+        //Ja é registrado automaticamente
         private readonly IAppDbContext _context;
 
         public UserController(IAppDbContext context)
         {
             _context = context;
         }
-
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] Models.requests.RegisterRequest model)
+        public async Task<IActionResult> Register([FromBody] JsonElement data)
         {
-            if (string.IsNullOrEmpty(model.Email) || string.IsNullOrEmpty(model.Password))
+            string? email = data.GetProperty("Email").GetString();
+            string? password = data.GetProperty("Password").GetString();
+            string? nickname = data.GetProperty("Nickname").GetString();
+            string? img = data.TryGetProperty("Img", out var imgProperty) ? imgProperty.GetString() : null;
+
+            // Verificação dos campos obrigatórios
+            if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password) || string.IsNullOrEmpty(nickname))
             {
-                return BadRequest("Dados inválidos.");
+                return BadRequest("Email, senha e nickname são obrigatórios.");
             }
 
-            var existingUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == model.Email);
+            var existingUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
             if (existingUser != null)
             {
                 return BadRequest("Email já registrado.");
             }
 
             var salt = BCrypt.Net.BCrypt.GenerateSalt();
-            var hashedPassword = BCrypt.Net.BCrypt.HashPassword(model.Password, salt);
+            var hashedPassword = BCrypt.Net.BCrypt.HashPassword(password, salt);
 
             var user = new User
             {
-                Email = model.Email,
+                Email = email,
                 Password = hashedPassword,
-                Nickname = model.Nickname,
-                Img = model.Img
+                Nickname = nickname,
+                Img = img
             };
 
             _context.Users.Add(user);
@@ -48,5 +55,6 @@ namespace chatApp.Server.Controllers
 
             return Ok("Usuário registrado com sucesso.");
         }
+
     }
 }

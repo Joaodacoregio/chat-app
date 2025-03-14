@@ -19,6 +19,7 @@ builder.Services.AddScoped<IAppDbContext>(provider => provider.GetRequiredServic
 
 // ========================== CONFIGURANDO JWT ========================== //
 // Recupera as configurações do JWT do appsettings.json ou User Secrets
+
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
 var secretKey = jwtSettings["SecretKey"] ?? throw new InvalidOperationException("JWT SecretKey not found!");
 
@@ -67,6 +68,7 @@ builder.WebHost.ConfigureKestrel(options =>
 
 
 // ========================== CONFIGURANDO SERVIÇOS ========================== //
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
