@@ -11,12 +11,12 @@ using System;
 using System.Reflection;
 
 [assembly: Microsoft.Extensions.Configuration.UserSecrets.UserSecretsIdAttribute("2c66c625-9c32-43be-bdad-5298d39560d6")]
-[assembly: System.Reflection.AssemblyCompanyAttribute("chatApp.SErver")]
+[assembly: System.Reflection.AssemblyCompanyAttribute("chatApp.Server")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1dd755b4a3c51d77d5a2a9c657bf4f9ec8a39428")]
-[assembly: System.Reflection.AssemblyProductAttribute("chatApp.SErver")]
-[assembly: System.Reflection.AssemblyTitleAttribute("chatApp.SErver")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b79cff2410b4269e3bf2818a2ab02337d958cd21")]
+[assembly: System.Reflection.AssemblyProductAttribute("chatApp.Server")]
+[assembly: System.Reflection.AssemblyTitleAttribute("chatApp.Server")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
 
 // Gerado pela classe WriteCodeFragment do MSBuild.

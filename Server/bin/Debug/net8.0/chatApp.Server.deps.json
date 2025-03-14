@@ -6,7 +6,7 @@
   "compilationOptions": {},
   "targets": {
     ".NETCoreApp,Version=v8.0": {
-      "chatApp.SErver/1.0.0": {
+      "chatApp.Server/1.0.0": {
         "dependencies": {
           "BCrypt.Net-Next": "4.0.3",
           "Microsoft.AspNetCore.Authentication.JwtBearer": "7.0.0",
@@ -19,7 +19,7 @@
           "System.IdentityModel.Tokens.Jwt": "8.6.0"
         },
         "runtime": {
-          "chatApp.SErver.dll": {}
+          "chatApp.Server.dll": {}
         }
       },
       "BCrypt.Net-Next/4.0.3": {
@@ -1022,7 +1022,7 @@
     }
   },
   "libraries": {
-    "chatApp.SErver/1.0.0": {
+    "chatApp.Server/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

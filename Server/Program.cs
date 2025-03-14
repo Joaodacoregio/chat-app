@@ -8,9 +8,14 @@ using chatApp.Hubs;
 var builder = WebApplication.CreateBuilder(args);
 
 // ========================== CONFIGURANDO BANCO DE DADOS ========================== //
+
 // Configura o DbContext com SQLite (Banco de Desenvolvimento)
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite("Data Source=chatApp.db"));
+
+//Adiciono por scoped ,  ServiceProvider, que contém todas as dependências registradas.
+builder.Services.AddScoped<IAppDbContext>(provider => provider.GetRequiredService<AppDbContext>());
+
 
 // ========================== CONFIGURANDO JWT ========================== //
 // Recupera as configurações do JWT do appsettings.json ou User Secrets
@@ -75,15 +80,6 @@ app.UseCors("AllowAll"); // Ativa a política de CORS
 app.UseAuthentication(); // Importante: deve vir antes de Authorization!
 app.UseAuthorization();
 app.MapControllers(); // Mapeia os controllers automaticamente
-
-
-
-// ========================== SWAGGER (Documentação da API) ========================== //
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
 
 
 //==========   Configura o SignalR no pipeline de middleware =============================//

@@ -1,0 +1,14 @@
+﻿.message-left {
+    text-align: left;
+    margin-right: auto;
+}
+
+.message-right {
+    text-align: right;
+    margin-left: auto;
+}
+
+.alert {
+    display: inline-block;
+    max-width: 80%; /* Limita a largura das mensagens */
+}

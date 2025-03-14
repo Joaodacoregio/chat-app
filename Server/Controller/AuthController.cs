@@ -14,13 +14,15 @@ using Microsoft.Extensions.Options;
 
 namespace chatApp.Server.Controllers
 {
-    //Não funcional
     [Route("api/[controller]")]
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly AppDbContext _context;
-        private readonly IConfiguration _configuration; // Para acessar o segredo JWT
+        private readonly IAppDbContext _context;
+
+        //IConfiguration já é registrado automaticamente pelo WebApplication.CreateBuilder(args);,
+        //Então não é necessário adicioná-lo manualmente com builder.Services.AddSingleton<IConfiguration,Configuration>
+        private readonly IConfiguration _configuration;  
 
         public AuthController(AppDbContext context, IConfiguration configuration)
         {

@@ -11,7 +11,7 @@ namespace chatApp.Server.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly IAppDbContext _context;
 
         public UserController(AppDbContext context)
         {

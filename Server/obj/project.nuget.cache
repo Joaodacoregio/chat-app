@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "N441mH6h54w=",
+  "dgSpecHash": "lwMm45cX774=",
   "success": true,
-  "projectFilePath": "C:\\Users\\joao.vitor\\source\\repos\\Joaodacoregio\\chat-app\\Server\\chatApp.SErver.csproj",
+  "projectFilePath": "C:\\Users\\joao.vitor\\source\\repos\\Joaodacoregio\\chat-app\\Server\\chatApp.Server.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\joao.vitor\\.nuget\\packages\\bcrypt.net-next\\4.0.3\\bcrypt.net-next.4.0.3.nupkg.sha512",
     "C:\\Users\\joao.vitor\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
