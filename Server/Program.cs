@@ -52,7 +52,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
     {
-        policy.WithOrigins("http://192.168.1.162:5001") // URL do frontend
+        policy.WithOrigins("http://192.168.1.151:5001") // URL do frontend
               .AllowCredentials() // Permite envio de cookies
               .AllowAnyHeader()
               .AllowAnyMethod();

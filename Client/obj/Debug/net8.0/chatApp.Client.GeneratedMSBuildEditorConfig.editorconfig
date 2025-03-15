@@ -13,49 +13,49 @@ build_property.EnforceExtendedAnalyzerRules =
 build_property._SupportedPlatformList = browser
 build_property.RootNamespace = chatApp.Client
 build_property.RootNamespace = chatApp.Client
-build_property.ProjectDir = C:\Users\joao.vitor\source\repos\Joaodacoregio\chat-app\Client\
+build_property.ProjectDir = C:\Users\Joao\Desktop\repos\chat-app\Client\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = false
 build_property.RazorLangVersion = 8.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = C:\Users\joao.vitor\source\repos\Joaodacoregio\chat-app\Client
+build_property.MSBuildProjectDirectory = C:\Users\Joao\Desktop\repos\chat-app\Client
 build_property._RazorSourceGeneratorDebug = 
 build_property.EffectiveAnalysisLevelStyle = 8.0
 build_property.EnableCodeStyleSeverity = 
 
-[C:/Users/joao.vitor/source/repos/Joaodacoregio/chat-app/Client/App.razor]
+[C:/Users/Joao/Desktop/repos/chat-app/Client/App.razor]
 build_metadata.AdditionalFiles.TargetPath = QXBwLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/joao.vitor/source/repos/Joaodacoregio/chat-app/Client/Layout/Footer.razor]
+[C:/Users/Joao/Desktop/repos/chat-app/Client/Layout/Footer.razor]
 build_metadata.AdditionalFiles.TargetPath = TGF5b3V0XEZvb3Rlci5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/joao.vitor/source/repos/Joaodacoregio/chat-app/Client/Pages/Chat.razor]
+[C:/Users/Joao/Desktop/repos/chat-app/Client/Pages/Chat.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ2hhdC5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/joao.vitor/source/repos/Joaodacoregio/chat-app/Client/Pages/Home.razor]
+[C:/Users/Joao/Desktop/repos/chat-app/Client/Pages/Home.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSG9tZS5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/joao.vitor/source/repos/Joaodacoregio/chat-app/Client/Pages/Login.razor]
+[C:/Users/Joao/Desktop/repos/chat-app/Client/Pages/Login.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTG9naW4ucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/joao.vitor/source/repos/Joaodacoregio/chat-app/Client/Pages/Register.razor]
+[C:/Users/Joao/Desktop/repos/chat-app/Client/Pages/Register.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUmVnaXN0ZXIucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/joao.vitor/source/repos/Joaodacoregio/chat-app/Client/_Imports.razor]
+[C:/Users/Joao/Desktop/repos/chat-app/Client/_Imports.razor]
 build_metadata.AdditionalFiles.TargetPath = X0ltcG9ydHMucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/joao.vitor/source/repos/Joaodacoregio/chat-app/Client/Layout/MainLayout.razor]
+[C:/Users/Joao/Desktop/repos/chat-app/Client/Layout/MainLayout.razor]
 build_metadata.AdditionalFiles.TargetPath = TGF5b3V0XE1haW5MYXlvdXQucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = b-c3y0hkgen8
 
-[C:/Users/joao.vitor/source/repos/Joaodacoregio/chat-app/Client/Layout/NavMenu.razor]
+[C:/Users/Joao/Desktop/repos/chat-app/Client/Layout/NavMenu.razor]
 build_metadata.AdditionalFiles.TargetPath = TGF5b3V0XE5hdk1lbnUucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = b-whhl75wj71
