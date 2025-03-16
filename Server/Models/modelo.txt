@@ -1,0 +1,22 @@
++-------------+       +-------------+       +-------------+
+|    User     |       |  RoomUser   |       |    Room     |
++-------------+       +-------------+       +-------------+
+| Id (PK)     |<----->| RoomId (FK) |<----->| RoomId (PK) |
+| Email       |  1:N  | UserId (FK) |  N:1  | UsersMask   |
+| Password    |       | (PK composta)|       | CreatedAt   |
+| Nickname    |       +-------------+       +-------------+
+| Img         |                              | 1:N
+| CreatedAt   |                              |
++-------------+                              |
+    | 1:N                                    |
+    |                                        |
++-------------+                              |
+|   Message   |<-----------------------------+
++-------------+
+| Id (PK)     |
+| UserName    |
+| Content     |
+| Timestamp   |
+| UserId (FK) |-----> N:1 (User)
+| RoomId (FK) |-----> N:1 (Room)
++-------------+

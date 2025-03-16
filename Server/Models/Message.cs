@@ -15,10 +15,15 @@ namespace chatApp.Server.Models
         public string Content { get; set; } = string.Empty;
 
         [Required]
-        public DateTime Timestamp { get; set; }
+        public DateTime Timestamp { get; set; } = DateTime.UtcNow;
 
-        [ForeignKey("UserId")] // Chave estrangeira para o usuário que enviou a mensagem
-        public int UserId { get; set; } 
+        [ForeignKey("UserId")]
+        public int UserId { get; set; } // Chave estrangeira para User
 
+        [ForeignKey("RoomId")]
+        public int RoomId { get; set; } // Chave estrangeira para Room
+
+        public virtual User User { get; set; }  
+        public virtual Room Room { get; set; }  
     }
 }

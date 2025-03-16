@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "FRMeCe3FsgU=",
+  "dgSpecHash": "NbUlV8PiVW8=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Joao\\Desktop\\repos\\chat-app\\Client\\chatApp.Client.csproj",
+  "projectFilePath": "C:\\Users\\Joao\\desktop\\repos\\chat-app\\Client\\chatApp.Client.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Joao\\.nuget\\packages\\microsoft.aspnetcore.authorization\\8.0.10\\microsoft.aspnetcore.authorization.8.0.10.nupkg.sha512",
     "C:\\Users\\Joao\\.nuget\\packages\\microsoft.aspnetcore.components\\8.0.10\\microsoft.aspnetcore.components.8.0.10.nupkg.sha512",

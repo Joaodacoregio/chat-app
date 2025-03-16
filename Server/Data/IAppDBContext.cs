@@ -9,6 +9,11 @@ namespace chatApp.Server.Data
     {
         DbSet<User> Users { get; }
         DbSet<Message> Messages { get; }
+
+        DbSet<Room> Rooms { get; }
+
+        DbSet<RoomUser> RoomsUsers { get; }
+
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     }
 }

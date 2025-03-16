@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.Authorization;
 using chatApp.CookieAuthentication;
+using chatApp.Client.Service;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -31,6 +32,10 @@ builder.Services.AddScoped(sp =>
 
 //Adiciona o serviço de autenticação
 builder.Services.AddScoped<AuthenticationStateProvider, CookieAuthStateProvider>();
-builder.Services.AddAuthorizationCore();  
+builder.Services.AddScoped<RoomService>(); //Isso diz que quando alguém pedir por uma instancia de RoomService, ele vai injetar 
+
+builder.Services.AddAuthorizationCore();
+
+ 
 
 await builder.Build().RunAsync();

@@ -5,7 +5,7 @@
 namespace chatApp.Server.Migrations
 {
     /// <inheritdoc />
-    public partial class UsersWithMessages2 : Migration
+    public partial class NewTablesToRooms : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

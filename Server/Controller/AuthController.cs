@@ -87,7 +87,6 @@ namespace chatApp.Server.Controllers
                 new Claim(ClaimTypes.Name, user.Nickname), // Apelido do usuário
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()), // ID do usuário
                 new Claim(ClaimTypes.Email, user.Email), // Email do usuário
-                new Claim(ClaimTypes.Role, user.Role) // Role do usuário
             };
 
             // Hash na chave secreta

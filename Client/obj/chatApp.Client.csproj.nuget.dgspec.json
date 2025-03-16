@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Joao\\Desktop\\repos\\chat-app\\Client\\chatApp.Client.csproj": {}
+    "C:\\Users\\Joao\\desktop\\repos\\chat-app\\Client\\chatApp.Client.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Joao\\Desktop\\repos\\chat-app\\Client\\chatApp.Client.csproj": {
+    "C:\\Users\\Joao\\desktop\\repos\\chat-app\\Client\\chatApp.Client.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Joao\\Desktop\\repos\\chat-app\\Client\\chatApp.Client.csproj",
+        "projectUniqueName": "C:\\Users\\Joao\\desktop\\repos\\chat-app\\Client\\chatApp.Client.csproj",
         "projectName": "chatApp.Client",
-        "projectPath": "C:\\Users\\Joao\\Desktop\\repos\\chat-app\\Client\\chatApp.Client.csproj",
+        "projectPath": "C:\\Users\\Joao\\desktop\\repos\\chat-app\\Client\\chatApp.Client.csproj",
         "packagesPath": "C:\\Users\\Joao\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Joao\\Desktop\\repos\\chat-app\\Client\\obj\\",
+        "outputPath": "C:\\Users\\Joao\\desktop\\repos\\chat-app\\Client\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

@@ -1,0 +1,124 @@
+﻿@page "/loby"
+@attribute [Authorize]
+@inject NavigationManager Navigation
+@inject AuthenticationStateProvider AuthStateProvider
+ 
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+
+<style>
+    .lobby-box {
+        width: 75vh;
+        height: 70vh;
+        padding: 20px;
+        border-radius: 10px;
+        background-color: #f8f9fa;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+    }
+
+    .rooms-list {
+        flex-grow: 1;
+        overflow-y: auto;
+    }
+
+    .room-item {
+        padding: 10px;
+        background-color: #fff;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+    }
+</style>
+
+<div class="lobby-box">
+    <h3 class="text-center mb-4">Lobby</h3>
+    <h5>Salas Disponíveis</h5>
+    <ul class="list-unstyled rooms-list">
+        @if (availableRooms == null)
+        {
+            <li class="alert alert-info">Carregando salas...</li>
+        }
+        else if (availableRooms.Count == 0)
+        {
+            <li class="alert alert-warning">Nenhuma sala disponível.</li>
+        }
+        else
+        {
+            @foreach (var room in availableRooms)
+            {
+                <li class="room-item mb-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span>@room</span>
+                        <button class="btn btn-primary" @onclick="() => EnterRoom(room)">Entrar</button>
+                    </div>
+                </li>
+            }
+        }
+    </ul>
+    <button class="btn btn-outline-danger mt-3" @onclick="SignOut">Sair</button>
+</div>
+
+@code {
+    [Inject]
+    public required RoomService roomService { get; set; }
+
+    [Inject]
+    public HttpClient HttpClient { get; set; } = default!;
+
+    [Inject]
+    public IJSRuntime JSRuntime { get; set; } = default!;
+
+    public required List<string> availableRooms;
+    private string selectedRoom = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        availableRooms = await roomService.GetRooms();
+    }
+
+    private async Task EnterRoom(string room)
+    {
+        selectedRoom = room;
+
+         if (room == "All")
+    {
+        // Entra direto na sala All sem pedir senha
+        Navigation.NavigateTo($"/chat/{Uri.EscapeDataString(room)}");
+        return;
+    }
+
+        var result = await JSRuntime.InvokeAsync<string>("Swal.fire", new
+        {
+            title = $"Senha da sala {room}",
+            input = "password",
+            inputLabel = "Digite a senha",
+            inputPlaceholder = "Senha",
+            showCancelButton = true,
+            confirmButtonText = "Entrar",
+            cancelButtonText = "Cancelar"
+        });
+
+        if (!string.IsNullOrEmpty(result))
+        {
+            // Envia para o backend validar
+            var response = await HttpClient.PostAsJsonAsync("api/room/validate", new { roomName = room, password = result });
+
+            if (response.IsSuccessStatusCode)
+            {
+                await JSRuntime.InvokeVoidAsync("Swal.fire", "Sucesso", "Entrando na sala...", "success");
+                Navigation.NavigateTo($"/chat/{Uri.EscapeDataString(room)}");
+            }
+            else
+            {
+                await JSRuntime.InvokeVoidAsync("Swal.fire", "Erro", "Senha incorreta!", "error");
+            }
+        }
+    }
+
+    private async Task SignOut()
+    {
+        await JSRuntime.InvokeVoidAsync("removeCookie", "authToken");
+        Navigation.NavigateTo("/login");
+    }
+}

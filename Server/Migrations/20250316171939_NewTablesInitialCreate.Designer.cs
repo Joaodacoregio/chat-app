@@ -11,8 +11,8 @@ using chatApp.Server.Data;
 namespace chatApp.Server.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250314184259_UsersWithMessages1")]
-    partial class UsersWithMessages1
+    [Migration("20250316171939_NewTablesInitialCreate")]
+    partial class NewTablesInitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -30,6 +30,9 @@ namespace chatApp.Server.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("RoomId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<DateTime>("Timestamp")
                         .HasColumnType("TEXT");
 
@@ -42,9 +45,52 @@ namespace chatApp.Server.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("RoomId");
+
                     b.HasIndex("UserId");
 
                     b.ToTable("Messages");
+                });
+
+            modelBuilder.Entity("chatApp.Server.Models.Room", b =>
+                {
+                    b.Property<int>("RoomId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Password")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("RoomId");
+
+                    b.ToTable("Rooms");
+
+                    b.HasData(
+                        new
+                        {
+                            RoomId = 1,
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)
+                        });
+                });
+
+            modelBuilder.Entity("chatApp.Server.Models.RoomUser", b =>
+                {
+                    b.Property<int>("RoomId")
+                        .HasColumnType("INTEGER")
+                        .HasColumnOrder(0);
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("INTEGER")
+                        .HasColumnOrder(1);
+
+                    b.HasKey("RoomId", "UserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("RoomsUsers");
                 });
 
             modelBuilder.Entity("chatApp.Server.Models.User", b =>
@@ -63,15 +109,6 @@ namespace chatApp.Server.Migrations
                     b.Property<string>("Img")
                         .HasColumnType("TEXT");
 
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<bool>("IsEmailConfirmed")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("LastLogin")
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("Nickname")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -82,21 +119,6 @@ namespace chatApp.Server.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("PasswordResetToken")
-                        .HasMaxLength(500)
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime?>("PasswordResetTokenExpiration")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Role")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("TEXT");
-
                     b.HasKey("Id");
 
                     b.ToTable("Users");
@@ -104,18 +126,54 @@ namespace chatApp.Server.Migrations
 
             modelBuilder.Entity("chatApp.Server.Models.Message", b =>
                 {
+                    b.HasOne("chatApp.Server.Models.Room", "Room")
+                        .WithMany("Messages")
+                        .HasForeignKey("RoomId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("chatApp.Server.Models.User", "User")
                         .WithMany("Messages")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("Room");
+
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("chatApp.Server.Models.RoomUser", b =>
+                {
+                    b.HasOne("chatApp.Server.Models.Room", "Room")
+                        .WithMany("RoomUsers")
+                        .HasForeignKey("RoomId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("chatApp.Server.Models.User", "User")
+                        .WithMany("RoomUsers")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Room");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("chatApp.Server.Models.Room", b =>
+                {
+                    b.Navigation("Messages");
+
+                    b.Navigation("RoomUsers");
                 });
 
             modelBuilder.Entity("chatApp.Server.Models.User", b =>
                 {
                     b.Navigation("Messages");
+
+                    b.Navigation("RoomUsers");
                 });
 #pragma warning restore 612, 618
         }
