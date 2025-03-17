@@ -17,7 +17,7 @@ builder.Services.AddScoped(sp =>
 {
     var client = new HttpClient
     {
-        BaseAddress = new Uri("http://192.168.1.151:5000/") //Porta para requisições do back-end
+        BaseAddress = new Uri("http://192.168.1.162:5000/") //Porta para requisições do back-end
 
     };
 
@@ -32,7 +32,12 @@ builder.Services.AddScoped(sp =>
 
 //Adiciona o serviço de autenticação
 builder.Services.AddScoped<AuthenticationStateProvider, CookieAuthStateProvider>();
-builder.Services.AddScoped<RoomService>(); //Isso diz que quando alguém pedir por uma instancia de RoomService, ele vai injetar 
+builder.Services.AddScoped<RoomManager>(); //Isso diz que quando alguém pedir por uma instancia de RoomService, ele vai injetar 
+builder.Services.AddScoped<RoomCRUD>();
+builder.Services.AddScoped<RoomValidator>();
+
+
+
 
 builder.Services.AddAuthorizationCore();
 

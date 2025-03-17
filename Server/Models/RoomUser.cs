@@ -12,8 +12,8 @@ namespace chatApp.Server.Models
         [Key, Column(Order = 1)]
         public int UserId { get; set; } // Parte da chave primária composta e FK para User
 
-        public virtual Room Room { get; set; } // Propriedade de navegação
-        public virtual User User { get; set; } // Propriedade de navegação
+        public virtual Room Room { get; set; } = default!; // Propriedade de navegação
+        public virtual User User { get; set; } = default!; // Propriedade de navegação
 
         //public virtual User User e public virtual Room (Usado por ef)
         //Room são propriedades de navegação que permitem acessar as entidades User e Room a partir de RoomUser.

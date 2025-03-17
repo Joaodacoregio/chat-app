@@ -22,6 +22,7 @@ namespace chatApp.Hubs
             var user = DecodeJwtToken(token);
             var userName = user?.Identity?.Name ?? "Usuário Desconhecido";
 
+            Console.WriteLine($"Usuário {userName} enviou a mensagem: {message}");
             // Obter o ID do usuário a partir do claim NameIdentifier
             var userIdString = user?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
@@ -35,7 +36,8 @@ namespace chatApp.Hubs
             // Salvar a mensagem no banco de dados
             var newMessage = new Message
             {
-                UserId = userId,         
+                UserId = userId,    
+                RoomId = 1, // Isso é um teste , TODO:ARRUMAR ISSO È UM TESTE
                 UserName = userName,
                 Content = message,
                 Timestamp = DateTime.UtcNow

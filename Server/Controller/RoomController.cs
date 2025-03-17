@@ -1,9 +1,8 @@
 ﻿
 using chatApp.Server.Data;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 using chatApp.Server.Models;
-using Newtonsoft.Json;
+ 
 
 namespace chatApp.Server.Controllers
 {
@@ -35,6 +34,56 @@ namespace chatApp.Server.Controllers
             return Ok(roomsData);
         }
 
+
+        [HttpPost("create")]
+        public async Task<IActionResult> CreateRoom([FromBody] RoomData rd)
+        {
+            var room = new Room
+            {
+                Name = rd.RoomName,
+                Password = rd.Password
+            };
+            _context.Rooms.Add(room);
+            await _context.SaveChangesAsync();
+
+            return Ok();
+        }
+
+
+        [HttpPost("Validate")]
+        public async Task<IActionResult> ValidateRoom([FromBody] RoomData rd)
+        {
+            var room = _context.Rooms.FirstOrDefault(r => r.Name == rd.RoomName);
+            if (room == null)
+            {
+                return NotFound();  
+            }
+            if (!string.IsNullOrEmpty(room.Password) && room.Password != rd.Password)
+            {
+                return Unauthorized();  
+            }
+            return Ok(); 
+        }
+
+        [HttpPost("PublicRoom")]
+        public async Task<IActionResult> PublicRoom([FromBody] RoomData rd)
+        {
+            var room = _context.Rooms.FirstOrDefault(r => r.Name == rd.RoomName);
+            if (room == null)
+            {
+                return NotFound(new { message = "Sala não encontrada", isPublic = false });
+            }
+
+            bool isPublic = string.IsNullOrEmpty(room.Password);
+
+            return Ok(new { isPublic = isPublic });
+        }
+
+        public class RoomData
+        {
+            public string RoomName { get; set; } = "";
+            public string? Password { get; set; }  
+        }
 
     }
         

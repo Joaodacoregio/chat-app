@@ -1,22 +1,27 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
- 
-    
+﻿using System.Net.Http.Json;
+using static chatApp.Client.Pages.Loby;
 
 namespace chatApp.Client.Service
 {
-    public class RoomService
+    //Usado apenas para CRUD das salas
+    public class RoomCRUD
     {
         private readonly HttpClient _httpClient;
-        private readonly ILogger<RoomService> _logger;
 
-        public RoomService(HttpClient httpClient, ILogger<RoomService> logger)
+        public RoomCRUD(HttpClient httpClient)
         {
             _httpClient = httpClient;
-            _logger = logger;
         }
 
+        // Criar sala (C) 
+        public async Task<bool> CreateRoomAsync(string roomName, string password)
+        {
+            var response = await _httpClient.PostAsJsonAsync("api/room/create", new { roomName, password });
+            return response.IsSuccessStatusCode;
+        }
+
+
+        // Buscar salas (R)
         public async Task<List<string>> GetRooms()
         {
             try
@@ -31,16 +36,10 @@ namespace chatApp.Client.Service
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erro ao carregar salas disponíveis");
+                Console.WriteLine(ex.Message);
                 return new List<string>();
             }
         }
     }
-
-    public class RoomData
-    {
-        public int roomId { get; set; } // Agora roomId é int
-        public string roomName { get; set; } = string.Empty;
-        public string createdAt { get; set; } = string.Empty;
-    }
 }
+ 

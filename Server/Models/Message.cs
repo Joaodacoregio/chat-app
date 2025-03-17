@@ -23,7 +23,7 @@ namespace chatApp.Server.Models
         [ForeignKey("RoomId")]
         public int RoomId { get; set; } // Chave estrangeira para Room
 
-        public virtual User User { get; set; }  
-        public virtual Room Room { get; set; }  
+        public virtual User User { get; set; } = default!;
+        public virtual Room Room { get; set; } = default!;
     }
 }
