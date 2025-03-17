@@ -2,7 +2,8 @@
 using chatApp.Server.Data;
 using Microsoft.AspNetCore.Mvc;
 using chatApp.Server.Models;
- 
+using Microsoft.EntityFrameworkCore;
+
 
 namespace chatApp.Server.Controllers
 {
@@ -22,7 +23,7 @@ namespace chatApp.Server.Controllers
         [HttpGet]
         public IActionResult GetRooms()
         {
-            var rooms = _context.Rooms.ToList();
+            var rooms = _context.Rooms.AsNoTracking().ToList();
 
             var roomsData = rooms.Select(room => new
             {
@@ -74,9 +75,13 @@ namespace chatApp.Server.Controllers
                 return NotFound(new { message = "Sala não encontrada", isPublic = false });
             }
 
-            bool isPublic = string.IsNullOrEmpty(room.Password);
+            if(string.IsNullOrEmpty(room.Password))
+            {
+                return Ok();
+            }
 
-            return Ok(new { isPublic = isPublic });
+            return Unauthorized();
+ 
         }
 
         public class RoomData
