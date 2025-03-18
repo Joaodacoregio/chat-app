@@ -4,6 +4,8 @@ using chatApp.Server.Services.Interfaces;
 using chatApp.Server.Domain.Interfaces.Bases;
 using Microsoft.AspNetCore.Identity.Data;
 using System.IdentityModel.Tokens.Jwt;
+using Microsoft.AspNetCore.Http;
+using chatApp.Server.Domain.Interfaces.Services;
 
 namespace chatApp.Server.Presentation.Controllers
 {
@@ -13,11 +15,13 @@ namespace chatApp.Server.Presentation.Controllers
     {
         private readonly IUserRepository _userRepository;
         private readonly ITokenService _tokenService;
+        private readonly ISaveToken _saveTokenService;
 
-        public AuthController(IUserRepository userRepository, ITokenService tokenService)
+        public AuthController(IUserRepository userRepository, ITokenService tokenService, ISaveToken saveTokenService)
         {
             _userRepository = userRepository;
             _tokenService = tokenService;
+            _saveTokenService = saveTokenService;
         }
 
         // VERIFICAÇÃO SE USUÁRIO ESTÁ AUTENTICADO
@@ -67,23 +71,11 @@ namespace chatApp.Server.Presentation.Controllers
 
             // GERA O TOKEN USANDO O TOKEN SERVICE
             var token = _tokenService.GenerateToken(user);
-            SetTokenCookie(token);
+
+            //Interface salva o token 
+            _saveTokenService.Save(token, Response);
 
             return Ok(new { Token = token });
-        }
-
-        // MÉTODO PRIVADO: SETAR COOKIE (Opcional)
-        private void SetTokenCookie(string token)
-        {
-            var cookieOptions = new CookieOptions
-            {
-                HttpOnly = true,
-                Secure = false, // Defina como true em produção (https)
-                SameSite = SameSiteMode.Lax,
-                Expires = DateTime.UtcNow.AddHours(1)
-            };
-
-            Response.Cookies.Append("authToken", token, cookieOptions);
         }
     }
 }

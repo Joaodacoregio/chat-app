@@ -8,6 +8,7 @@ using chatApp.Server.Domain.Interfaces.Bases;
 using chatApp.Server.Application.Bases;
 using chatApp.Server.Services.Interfaces;
 using chatApp.Server.Services;
+using chatApp.Server.Domain.Interfaces.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -82,6 +83,8 @@ builder.Services.AddScoped<IAppDbContext>(provider => provider.GetRequiredServic
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<ISaveToken, TokenService>();
+
 
 
 

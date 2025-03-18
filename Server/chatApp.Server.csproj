@@ -28,8 +28,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Application\Services\" />
-    <Folder Include="Domain\Interfaces\Services\" />
     <Folder Include="Infrastructure\Security\" />
     <Folder Include="Migrations\" />
   </ItemGroup>
