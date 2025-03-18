@@ -13,11 +13,13 @@ using chatApp.Server.Domain.Interfaces.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 // ========================== CONFIGURANDO BANCO DE DADOS ========================== //
+//Recuperar a string de conexão
+string? connectionString = builder.Configuration.GetConnectionString("ConnectionString");
+
 
 // Configura o DbContext com SQLite (Banco de Desenvolvimento)
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlite("Data Source=chatApp.db"));
-
+    options.UseSqlite(connectionString));
 
 // ========================== CONFIGURANDO JWT ========================== //
 // Recupera as configurações do JWT do appsettings.json ou User Secrets

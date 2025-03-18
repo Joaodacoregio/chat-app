@@ -5,7 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using chatApp.Server.Domain.Models;
 using chatApp.Server.Domain.Interfaces.Services;
-using Microsoft.Extensions.Options;
+ 
 
 namespace chatApp.Server.Services
 {
@@ -67,7 +67,7 @@ namespace chatApp.Server.Services
             }
         }
 
-
+        //Vem da interface para salvar o token (cookie , localstorage ou sessionStorage)
         public void Save(string token, HttpResponse response)
         {
             var cookieOptions = new CookieOptions
