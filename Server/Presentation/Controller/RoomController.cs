@@ -1,28 +1,24 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using chatApp.Server.Domain.Models;
-using Microsoft.EntityFrameworkCore;
-using chatApp.Server.Data.Context;
-
+using chatApp.Server.Domain.Interfaces.Bases;
 
 namespace chatApp.Server.Presentation.Controller
 {
-    //Classe para gerenciar as salas
     [Route("api/[controller]")]
     [ApiController]
     public class RoomController : ControllerBase
     {
-        //Ja é registrado automaticamente
-        private readonly IAppDbContext _context;
+        private readonly IRoomRepository _roomRepository;
 
-        public RoomController(IAppDbContext context)
+        public RoomController(IRoomRepository roomRepository)
         {
-            _context = context;
+            _roomRepository = roomRepository;
         }
 
         [HttpGet]
-        public IActionResult GetRooms()
+        public async Task<IActionResult> GetRooms()
         {
-            var rooms = _context.Rooms.AsNoTracking().ToList();
+            var rooms = await _roomRepository.GetAllAsync();
 
             var roomsData = rooms.Select(room => new
             {
@@ -34,7 +30,6 @@ namespace chatApp.Server.Presentation.Controller
             return Ok(roomsData);
         }
 
-
         [HttpPost("create")]
         public async Task<IActionResult> CreateRoom([FromBody] RoomData rd)
         {
@@ -43,53 +38,51 @@ namespace chatApp.Server.Presentation.Controller
                 Name = rd.RoomName,
                 Password = rd.Password
             };
-            _context.Rooms.Add(room);
-            await _context.SaveChangesAsync();
+
+            await _roomRepository.AddAsync(room);
+            await _roomRepository.SaveChangesAsync();
 
             return Ok();
         }
 
-
         [HttpPost("Validate")]
         public async Task<IActionResult> ValidateRoom([FromBody] RoomData rd)
         {
-            var room = _context.Rooms.FirstOrDefault(r => r.Name == rd.RoomName);
+            var room = await _roomRepository.GetRoomByNameAsync(rd.RoomName);
             if (room == null)
             {
-                return NotFound();  
+                return NotFound();
             }
+
             if (!string.IsNullOrEmpty(room.Password) && room.Password != rd.Password)
             {
-                return Unauthorized();  
+                return Unauthorized();
             }
-            return Ok(); 
+
+            return Ok();
         }
 
         [HttpPost("PublicRoom")]
         public async Task<IActionResult> PublicRoom([FromBody] RoomData rd)
         {
-            var room = _context.Rooms.FirstOrDefault(r => r.Name == rd.RoomName);
+            var room = await _roomRepository.GetRoomByNameAsync(rd.RoomName);
             if (room == null)
             {
                 return NotFound(new { message = "Sala não encontrada", isPublic = false });
             }
 
-            if(string.IsNullOrEmpty(room.Password))
+            if (string.IsNullOrEmpty(room.Password))
             {
                 return Ok();
             }
 
             return Unauthorized();
- 
         }
 
         public class RoomData
         {
             public string RoomName { get; set; } = "";
-            public string? Password { get; set; }  
+            public string? Password { get; set; }
         }
-
     }
-        
-        
 }

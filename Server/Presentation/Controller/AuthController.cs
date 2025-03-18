@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using chatApp.Server.Domain.Models;
 using chatApp.Server.Services.Interfaces;
 using chatApp.Server.Domain.Interfaces.Bases;
 using Microsoft.AspNetCore.Identity.Data;
 using System.IdentityModel.Tokens.Jwt;
-using Microsoft.AspNetCore.Http;
 using chatApp.Server.Domain.Interfaces.Services;
 
 namespace chatApp.Server.Presentation.Controllers
@@ -54,28 +52,36 @@ namespace chatApp.Server.Presentation.Controllers
             }
         }
 
-        // LOGIN
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest model)
         {
-            if (string.IsNullOrEmpty(model.Email) || string.IsNullOrEmpty(model.Password))
+            try
             {
-                return BadRequest("Dados inválidos.");
-            }
+                if (string.IsNullOrEmpty(model.Email) || string.IsNullOrEmpty(model.Password))
+                {
+                    return BadRequest("Dados inválidos.");
+                }
 
-            var user = await _userRepository.GetUserByEmailAsync(model.Email);
-            if (user == null || !BCrypt.Net.BCrypt.Verify(model.Password, user.Password))
+                var user = await _userRepository.GetUserByEmailAsync(model.Email);
+                if (user == null || !BCrypt.Net.BCrypt.Verify(model.Password, user.Password))
+                {
+                    return Unauthorized("Credenciais inválidas.");
+                }
+
+                // GERA O TOKEN USANDO O TOKEN SERVICE
+                var token = _tokenService.GenerateToken(user);
+
+                // SALVA O TOKEN
+                _saveTokenService.Save(token, Response);
+
+                return Ok(new { Token = token });
+            }
+            catch (Exception ex)
             {
-                return Unauthorized("Credenciais inválidas.");
+                // Logar o erro seria interessante aqui, caso tenha um logger
+                return StatusCode(500, new { message = "Erro interno no servidor.", details = ex.Message });
             }
-
-            // GERA O TOKEN USANDO O TOKEN SERVICE
-            var token = _tokenService.GenerateToken(user);
-
-            //Interface salva o token 
-            _saveTokenService.Save(token, Response);
-
-            return Ok(new { Token = token });
         }
+
     }
 }

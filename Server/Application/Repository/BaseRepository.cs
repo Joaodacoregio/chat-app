@@ -5,10 +5,10 @@ using System.Linq.Expressions;
 
 namespace chatApp.Server.Application.Bases
 {
-    public class BaseRepository<T> : IBaseRepository<T> where T : class
+    public class BaseRepository<T> : IBaseRepository<T> where T : class //T So pode ser classe
     {
         protected readonly IAppDbContext _context;
-        protected readonly DbSet<T> _dbSet;
+        protected readonly DbSet<T> _dbSet; //Representa a tabela
 
         public BaseRepository(IAppDbContext context)
         {

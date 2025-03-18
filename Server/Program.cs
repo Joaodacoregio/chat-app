@@ -83,6 +83,7 @@ builder.Services.AddSignalR();
 
 builder.Services.AddScoped<IAppDbContext>(provider => provider.GetRequiredService<AppDbContext>());
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IRoomRepository, RoomRepository>();
 builder.Services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<ISaveToken, TokenService>();
