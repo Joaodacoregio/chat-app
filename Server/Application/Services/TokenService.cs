@@ -4,12 +4,12 @@ using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using chatApp.Server.Domain.Models;
-using chatApp.Server.Domain.Interfaces.Services;
+ 
  
 
 namespace chatApp.Server.Services
 {
-    public class TokenService : ITokenService, ISaveToken 
+    public class TokenService : ITokenService
     {
         private readonly IConfiguration _configuration;
 
@@ -21,14 +21,15 @@ namespace chatApp.Server.Services
         public string GenerateToken(User user)
         {
             var jwtSettings = _configuration.GetSection("JwtSettings");
-            var secretKey = jwtSettings["SecretKey"] ?? throw new InvalidOperationException("JWT SecretKey not found!");
+            var secretKey = jwtSettings["SecretKey"] ?? 
+                throw new InvalidOperationException("JWT SecretKey not found!");
 
             var claims = new[]
             {
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Name, user.Nickname),
-                new Claim(ClaimTypes.Email, user.Email),
-            };
+                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                    new Claim(ClaimTypes.Name, user.Nickname),
+                    new Claim(ClaimTypes.Email, user.Email),
+                };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -45,7 +46,7 @@ namespace chatApp.Server.Services
         }
 
         //out -> não precisa ser inicializado antes de ser passado para o método.
-        public bool ValidateToken(string token, out JwtSecurityToken jwtToken)
+        public bool ValidateToken(string token, out JwtSecurityToken? jwtToken)
         {
             jwtToken = null;
             try
@@ -67,19 +68,24 @@ namespace chatApp.Server.Services
             }
         }
 
-        //Vem da interface para salvar o token (cookie , localstorage ou sessionStorage)
-        public void Save(string token, HttpResponse response)
+        public ClaimsPrincipal DecodeJwtToken(string token)
         {
-            var cookieOptions = new CookieOptions
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var jwtToken = tokenHandler.ReadJwtToken(token);
+
+            var userName = jwtToken.Claims.FirstOrDefault
+                (c => c.Type == ClaimTypes.Name)?.Value ?? "Usuário Desconhecido";
+            var userId = jwtToken.Claims.FirstOrDefault
+                (c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "ID Desconhecido";
+
+            var claims = jwtToken.Claims.Concat(new[]
             {
-                HttpOnly = true,
-                Secure = false, // Defina como true em produção (https)
-                SameSite = SameSiteMode.Lax,
-                Expires = DateTime.UtcNow.AddHours(1)
-            };
+                 new Claim(ClaimTypes.Name, userName),
+                 new Claim(ClaimTypes.NameIdentifier, userId)
+            });
 
-            response.Cookies.Append("authToken", token, cookieOptions);
-
+            return new ClaimsPrincipal(new ClaimsIdentity(claims));
         }
+
     }
 }

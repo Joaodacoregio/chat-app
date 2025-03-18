@@ -13,13 +13,13 @@ namespace chatApp.Server.Presentation.Controllers
     {
         private readonly IUserRepository _userRepository;
         private readonly ITokenService _tokenService;
-        private readonly ISaveToken _saveTokenService;
+        private readonly ITokenKeeper _tokenKeeper;
 
-        public AuthController(IUserRepository userRepository, ITokenService tokenService, ISaveToken saveTokenService)
+        public AuthController(IUserRepository userRepository, ITokenService tokenService, ITokenKeeper saveTokenService)
         {
             _userRepository = userRepository;
             _tokenService = tokenService;
-            _saveTokenService = saveTokenService;
+            _tokenKeeper = saveTokenService;
         }
 
         // VERIFICAÇÃO SE USUÁRIO ESTÁ AUTENTICADO
@@ -72,7 +72,7 @@ namespace chatApp.Server.Presentation.Controllers
                 var token = _tokenService.GenerateToken(user);
 
                 // SALVA O TOKEN
-                _saveTokenService.Save(token, Response);
+                _tokenKeeper.Save(token, Response);
 
                 return Ok(new { Token = token });
             }

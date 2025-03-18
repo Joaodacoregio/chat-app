@@ -9,6 +9,9 @@ using chatApp.Server.Application.Bases;
 using chatApp.Server.Services.Interfaces;
 using chatApp.Server.Services;
 using chatApp.Server.Domain.Interfaces.Services;
+using chatApp.Server.Application.Repositories;
+using chatApp.Server.Domain.Interfaces.Repository;
+using chatApp.Server.Application.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -82,11 +85,12 @@ builder.Services.AddSignalR();
 //================= Injetar dependencias  =============================//
 
 builder.Services.AddScoped<IAppDbContext>(provider => provider.GetRequiredService<AppDbContext>());
+builder.Services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IRoomRepository, RoomRepository>();
-builder.Services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
+builder.Services.AddScoped<IMessageRepository, MessageRepository>();
 builder.Services.AddScoped<ITokenService, TokenService>();
-builder.Services.AddScoped<ISaveToken, TokenService>();
+builder.Services.AddScoped<ITokenKeeper, TokenKeeper>();
 
 
 
