@@ -1,11 +1,11 @@
-﻿using chatApp.Server.Data;
-using chatApp.Server.Models;
+﻿using chatApp.Server.Domain.Models;
 using Microsoft.AspNetCore.SignalR;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Newtonsoft.Json;
+using chatApp.Server.Data.Context;
 
-namespace chatApp.Hubs
+namespace chatApp.Server.Presentation.Hubs
 {
     public class ChatHub : Hub
     {
@@ -50,7 +50,7 @@ namespace chatApp.Hubs
             // Biblioteca para JSON (Newtonsoft)
             var messageData = JsonConvert.SerializeObject(new
             {
-                userName = userName,
+                userName,
                 content = message,
                 timestamp = newMessage.Timestamp.ToString("yyyy-MM-dd HH:mm:ss")
             });

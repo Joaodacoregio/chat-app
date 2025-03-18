@@ -1,11 +1,10 @@
-﻿
-using chatApp.Server.Data;
-using Microsoft.AspNetCore.Mvc;
-using chatApp.Server.Models;
+﻿using Microsoft.AspNetCore.Mvc;
+using chatApp.Server.Domain.Models;
 using Microsoft.EntityFrameworkCore;
+using chatApp.Server.Data.Context;
 
 
-namespace chatApp.Server.Controllers
+namespace chatApp.Server.Presentation.Controller
 {
     //Classe para gerenciar as salas
     [Route("api/[controller]")]

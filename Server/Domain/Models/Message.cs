@@ -1,7 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+ 
 
-namespace chatApp.Server.Models
+namespace chatApp.Server.Domain.Models
 {
     public class Message
     {

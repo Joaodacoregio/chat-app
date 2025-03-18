@@ -1,7 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace chatApp.Server.Models
+namespace chatApp.Server.Domain.Models
 {
     public class User
     {

@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.Intrinsics.X86;
 
-namespace chatApp.Server.Models
+namespace chatApp.Server.Domain.Models
 {
     public class RoomUser
     {

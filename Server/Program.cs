@@ -1,9 +1,11 @@
 using Microsoft.EntityFrameworkCore;
-using chatApp.Server.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using chatApp.Hubs;
+using chatApp.Server.Data.Context;
+using chatApp.Server.Domain.Repositories.Bases;
+using chatApp.Server.Domain.Repositories.Interfaces;
+using chatApp.Server.Presentation.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -75,6 +77,12 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddSignalR();
 
 
+//================= Repositories =============================//
+
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
+
+
 var app = builder.Build();
 
 // ========================== CONFIGURANDO O PIPELINE ========================== //
@@ -87,7 +95,7 @@ app.MapControllers(); // Mapeia os controllers automaticamente
 //==========   Configura o SignalR no pipeline de middleware =============================//
 
 app.MapHub<ChatHub>("/chatHub");
- 
+
 // ========================== INICIANDO A APLICAÇÃO ========================== //
 
 app.MapGet("/", () => "App rodando!");

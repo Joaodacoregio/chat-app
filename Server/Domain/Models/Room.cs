@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Collections.ObjectModel;
 
-namespace chatApp.Server.Models
+namespace chatApp.Server.Domain.Models
 {
     public class Room
     {
