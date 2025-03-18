@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using chatApp.Server.Domain.Models;
 using System.Text.Json;
-using chatApp.Server.Domain.Repositories.Interfaces;
+using chatApp.Server.Domain.Interfaces.Bases;
 
 
 namespace chatApp.Server.Presentation.Controller

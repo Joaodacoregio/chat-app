@@ -1,9 +1,9 @@
 ﻿using chatApp.Server.Data.Context;
+using chatApp.Server.Domain.Interfaces.Bases;
 using chatApp.Server.Domain.Models;
-using chatApp.Server.Domain.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace chatApp.Server.Domain.Repositories.Bases
+namespace chatApp.Server.Application.Bases
 {
     public class UserRepository : BaseRepository<User>, IUserRepository
     {

@@ -3,9 +3,11 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using chatApp.Server.Data.Context;
-using chatApp.Server.Domain.Repositories.Bases;
-using chatApp.Server.Domain.Repositories.Interfaces;
 using chatApp.Server.Presentation.Hubs;
+using chatApp.Server.Domain.Interfaces.Bases;
+using chatApp.Server.Application.Bases;
+using chatApp.Server.Services.Interfaces;
+using chatApp.Server.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,9 +16,6 @@ var builder = WebApplication.CreateBuilder(args);
 // Configura o DbContext com SQLite (Banco de Desenvolvimento)
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite("Data Source=chatApp.db"));
-
-//Adiciono por scoped ,  ServiceProvider, que contém todas as dependências registradas.
-builder.Services.AddScoped<IAppDbContext>(provider => provider.GetRequiredService<AppDbContext>());
 
 
 // ========================== CONFIGURANDO JWT ========================== //
@@ -77,12 +76,17 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddSignalR();
 
 
-//================= Repositories =============================//
+//================= Injetar dependencias  =============================//
 
+builder.Services.AddScoped<IAppDbContext>(provider => provider.GetRequiredService<AppDbContext>());
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
+builder.Services.AddScoped<ITokenService, TokenService>();
 
 
+
+
+// ========================= Construir ========================== //
 var app = builder.Build();
 
 // ========================== CONFIGURANDO O PIPELINE ========================== //

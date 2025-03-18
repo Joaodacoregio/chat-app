@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
 
-namespace chatApp.Server.Domain.Repositories.Interfaces
+namespace chatApp.Server.Domain.Interfaces.Bases
 {
     public interface IBaseRepository<T> where T : class
     {

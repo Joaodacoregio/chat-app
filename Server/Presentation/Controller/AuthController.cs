@@ -1,25 +1,23 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Identity.Data;
-using System.Security.Claims;
-using System.IdentityModel.Tokens.Jwt;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using chatApp.Server.Domain.Repositories.Interfaces;
 using chatApp.Server.Domain.Models;
+using chatApp.Server.Services.Interfaces;
+using chatApp.Server.Domain.Interfaces.Bases;
+using Microsoft.AspNetCore.Identity.Data;
+using System.IdentityModel.Tokens.Jwt;
 
-namespace chatApp.Server.Presentation.Controller
+namespace chatApp.Server.Presentation.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     public class AuthController : ControllerBase
     {
         private readonly IUserRepository _userRepository;
-        private readonly IConfiguration _configuration;
+        private readonly ITokenService _tokenService;
 
-        public AuthController(IUserRepository userRepository, IConfiguration configuration)
+        public AuthController(IUserRepository userRepository, ITokenService tokenService)
         {
             _userRepository = userRepository;
-            _configuration = configuration;
+            _tokenService = tokenService;
         }
 
         // VERIFICAÇÃO SE USUÁRIO ESTÁ AUTENTICADO
@@ -67,40 +65,11 @@ namespace chatApp.Server.Presentation.Controller
                 return Unauthorized("Credenciais inválidas.");
             }
 
-            // GERA TOKEN JWT
-            var token = GenerateJwtToken(user);
-
-            // SET COOKIE OPCIONAL
+            // GERA O TOKEN USANDO O TOKEN SERVICE
+            var token = _tokenService.GenerateToken(user);
             SetTokenCookie(token);
 
             return Ok(new { Token = token });
-        }
-
-        // MÉTODO PRIVADO: GERAR JWT
-        private string GenerateJwtToken(User user)
-        {
-            var jwtSettings = _configuration.GetSection("JwtSettings");
-            var secretKey = jwtSettings["SecretKey"] ?? throw new InvalidOperationException("JWT SecretKey not found!");
-
-            var claims = new[]
-            {
-                new Claim(ClaimTypes.Name, user.Nickname),
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Email, user.Email),
-            };
-
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
-            var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-            var token = new JwtSecurityToken(
-                issuer: jwtSettings["Issuer"],
-                audience: jwtSettings["Audience"],
-                claims: claims,
-                expires: DateTime.UtcNow.AddHours(2),
-                signingCredentials: credentials
-            );
-
-            return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
         // MÉTODO PRIVADO: SETAR COOKIE (Opcional)
