@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using chatApp.Server.Domain.Models;
 using chatApp.Server.Domain.Interfaces.Bases;
+using chatApp.Server.Domain.Interfaces.UoW;
 
 namespace chatApp.Server.Presentation.Controller
 {
@@ -8,17 +9,17 @@ namespace chatApp.Server.Presentation.Controller
     [ApiController]
     public class RoomController : ControllerBase
     {
-        private readonly IRoomRepository _roomRepository;
+        private readonly IUnitOfWork _uow;
 
-        public RoomController(IRoomRepository roomRepository)
+        public RoomController(IUnitOfWork unityOfWork)
         {
-            _roomRepository = roomRepository;
+            _uow = unityOfWork;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetRooms()
         {
-            var rooms = await _roomRepository.GetAllAsync();
+            var rooms = await _uow.Rooms.GetAllAsync();
 
             var roomsData = rooms.Select(room => new
             {
@@ -39,8 +40,8 @@ namespace chatApp.Server.Presentation.Controller
                 Password = rd.Password
             };
 
-            await _roomRepository.AddAsync(room);
-            await _roomRepository.SaveChangesAsync();
+            await _uow.Rooms.AddAsync(room);
+            await _uow.SaveChangesAsync();
 
             return Ok();
         }
@@ -48,7 +49,7 @@ namespace chatApp.Server.Presentation.Controller
         [HttpPost("Validate")]
         public async Task<IActionResult> ValidateRoom([FromBody] RoomData rd)
         {
-            var room = await _roomRepository.GetRoomByNameAsync(rd.RoomName);
+            var room = await _uow.Rooms.GetRoomByNameAsync(rd.RoomName);
             if (room == null)
             {
                 return NotFound();
@@ -65,7 +66,7 @@ namespace chatApp.Server.Presentation.Controller
         [HttpPost("PublicRoom")]
         public async Task<IActionResult> PublicRoom([FromBody] RoomData rd)
         {
-            var room = await _roomRepository.GetRoomByNameAsync(rd.RoomName);
+            var room = await _uow.Rooms.GetRoomByNameAsync(rd.RoomName);
             if (room == null)
             {
                 return NotFound(new { message = "Sala não encontrada", isPublic = false });

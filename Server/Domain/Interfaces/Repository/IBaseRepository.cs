@@ -13,6 +13,5 @@ namespace chatApp.Server.Domain.Interfaces.Bases
         Task AddAsync(T entity);
         void Update(T entity);
         void Remove(T entity);
-        Task SaveChangesAsync();
     }
 }

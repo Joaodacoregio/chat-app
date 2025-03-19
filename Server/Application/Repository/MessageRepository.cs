@@ -29,9 +29,6 @@ namespace chatApp.Server.Application.Repositories
             return await _dbSet.OrderBy(m => m.Timestamp).ToListAsync();
         }
 
-        public async Task SaveChangesAsync()
-        {
-            await _context.SaveChangesAsync();
-        }
+
     }
 }

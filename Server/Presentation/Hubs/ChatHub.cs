@@ -5,19 +5,20 @@ using System.Security.Claims;
 using Newtonsoft.Json;
 using chatApp.Server.Domain.Interfaces.Repository;
 using chatApp.Server.Services.Interfaces;
+using chatApp.Server.Domain.Interfaces.UoW;
 
 namespace chatApp.Server.Presentation.Hubs
 {
     public class ChatHub : Hub
     {
-        private readonly IMessageRepository _messageRepository;
+        private readonly IUnitOfWork _uow;
         private readonly ITokenService _tokenService;
         private static Dictionary<string, string> _userConnections = new Dictionary<string, string>();
 
-        public ChatHub(IMessageRepository messageRepository, ITokenService tokenService)
+        public ChatHub(IUnitOfWork unityOfWork, ITokenService tokenService)
         {
             _tokenService = tokenService;
-            _messageRepository = messageRepository;
+            _uow = unityOfWork;
         }
 
         public async Task SendMessage(string message, string token)
@@ -39,8 +40,8 @@ namespace chatApp.Server.Presentation.Hubs
                 Timestamp = DateTime.UtcNow
             };
 
-            await _messageRepository.AddMessageAsync(newMessage);
-            await _messageRepository.SaveChangesAsync();
+            await _uow.Messages.AddMessageAsync(newMessage);
+            await _uow.SaveChangesAsync();
 
             var messageData = JsonConvert.SerializeObject(new
             {
@@ -67,7 +68,7 @@ namespace chatApp.Server.Presentation.Hubs
             await Clients.Caller.SendAsync("ConnectedUsers", connectedUsers);
 
             // Carregar histórico usando repository
-            var pastMessages = await _messageRepository.GetAllMessagesAsync();
+            var pastMessages = await _uow.Messages.GetAllMessagesAsync();
 
             var pastMessagesJson = JsonConvert.SerializeObject(
                 pastMessages.Select(m => new

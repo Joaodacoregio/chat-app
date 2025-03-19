@@ -73,13 +73,6 @@ namespace chatApp.Server.Application.Bases
             _dbSet.Remove(entity);
         }
 
-        public async Task SaveChangesAsync()
-        {
-            var changes = await _context.SaveChangesAsync();
-            if (changes == 0)
-            {
-                throw new InvalidOperationException("Nenhuma alteração foi salva no banco.");
-            }
-        }
+   
     }
 }

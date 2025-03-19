@@ -12,6 +12,8 @@ using chatApp.Server.Domain.Interfaces.Services;
 using chatApp.Server.Application.Repositories;
 using chatApp.Server.Domain.Interfaces.Repository;
 using chatApp.Server.Application.Services;
+using chatApp.Server.Domain.Interfaces.UoW;
+using chatApp.Server.Infrastructure.UoW;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -82,7 +84,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddSignalR();
 
 
-//================= Injetar dependencias  =============================//
+#region  Injetar dependencias
 
 builder.Services.AddScoped<IAppDbContext>(provider => provider.GetRequiredService<AppDbContext>());
 builder.Services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
@@ -90,11 +92,12 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IRoomRepository, RoomRepository>();
 builder.Services.AddScoped<IMessageRepository, MessageRepository>();
 builder.Services.AddScoped<ITokenService, TokenService>();
-builder.Services.AddScoped<ITokenKeeper, TokenKeeper>();
+builder.Services.AddScoped<ITokenKeeper, CookieTokenSave>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IUserConnectionHubService, UserConnectionHubService>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-
-
-
+#endregion
 
 // ========================= Construir ========================== //
 var app = builder.Build();

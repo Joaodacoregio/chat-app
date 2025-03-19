@@ -2,6 +2,7 @@
 using chatApp.Server.Domain.Models;
 using System.Text.Json;
 using chatApp.Server.Domain.Interfaces.Bases;
+using chatApp.Server.Domain.Interfaces.UoW;
 
 
 namespace chatApp.Server.Presentation.Controller
@@ -11,11 +12,11 @@ namespace chatApp.Server.Presentation.Controller
     public class UserController : ControllerBase
     {
         //Agora da para usar essa interface para fazer o controle direto com o DB
-        private readonly IUserRepository _userRepository;
+        private readonly IUnitOfWork _uow;
 
-        public UserController(IUserRepository userRepository)
+        public UserController(IUnitOfWork unitOfWork)
         {
-            _userRepository = userRepository;
+            _uow = unitOfWork;
         }
 
         [HttpPost("register")]
@@ -36,7 +37,7 @@ namespace chatApp.Server.Presentation.Controller
                 }
 
                 // Verificando se já existe um usuário
-                var existingUser = await _userRepository.GetUserByEmailAsync(email);
+                var existingUser = await _uow.Users.GetUserByEmailAsync(email);
                 if (existingUser != null)
                 {
                     return BadRequest("Email já registrado.");
@@ -54,8 +55,8 @@ namespace chatApp.Server.Presentation.Controller
                     Img = img
                 };
 
-                await _userRepository.AddAsync(user);
-                await _userRepository.SaveChangesAsync();
+                await _uow.Users.AddAsync(user);
+                await _uow.SaveChangesAsync();
 
                 return Ok("Usuário registrado com sucesso.");
             }

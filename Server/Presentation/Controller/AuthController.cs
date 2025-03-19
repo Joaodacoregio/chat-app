@@ -4,6 +4,7 @@ using chatApp.Server.Domain.Interfaces.Bases;
 using Microsoft.AspNetCore.Identity.Data;
 using System.IdentityModel.Tokens.Jwt;
 using chatApp.Server.Domain.Interfaces.Services;
+using chatApp.Server.Domain.Interfaces.UoW;
 
 namespace chatApp.Server.Presentation.Controllers
 {
@@ -11,13 +12,13 @@ namespace chatApp.Server.Presentation.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly IUserRepository _userRepository;
+        private readonly IUnitOfWork _uow;
         private readonly ITokenService _tokenService;
         private readonly ITokenKeeper _tokenKeeper;
 
-        public AuthController(IUserRepository userRepository, ITokenService tokenService, ITokenKeeper saveTokenService)
+        public AuthController(IUnitOfWork unityOfWork, ITokenService tokenService, ITokenKeeper saveTokenService)
         {
-            _userRepository = userRepository;
+            _uow = unityOfWork;
             _tokenService = tokenService;
             _tokenKeeper = saveTokenService;
         }
@@ -62,7 +63,7 @@ namespace chatApp.Server.Presentation.Controllers
                     return BadRequest("Dados inválidos.");
                 }
 
-                var user = await _userRepository.GetUserByEmailAsync(model.Email);
+                var user = await _uow.Users.GetUserByEmailAsync(model.Email);
                 if (user == null || !BCrypt.Net.BCrypt.Verify(model.Password, user.Password))
                 {
                     return Unauthorized("Credenciais inválidas.");
