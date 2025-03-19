@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using System.Net.Http.Headers;
 using System.Security.Claims;
+using static chatApp.Client.Pages.Login;
+using System.Net.Http.Json;
 
 
 namespace chatApp.CookieAuthentication
@@ -27,7 +29,7 @@ namespace chatApp.CookieAuthentication
         {
             var currentPath = _navigationManager.ToBaseRelativePath(_navigationManager.Uri);
 
-            // Ignorar verificação em páginas públicas explicitamente //TODO:CRIAR UM MAP OU FACTORY
+            // Ignorar verificação em páginas públicas
             if (currentPath.Equals("login", StringComparison.OrdinalIgnoreCase) ||
                 currentPath.Equals("register", StringComparison.OrdinalIgnoreCase))
             {
@@ -36,29 +38,64 @@ namespace chatApp.CookieAuthentication
 
             try
             {
-                // Função que eu fiz em JS que é importada pelo jsRuntime
-                var authToken = await _jsRuntime.InvokeAsync<string>("getCookie", "authToken");
+                var accessToken = await _jsRuntime.InvokeAsync<string>("getCookie", "accessToken");
 
-                //Verifica se existe
-                if (string.IsNullOrEmpty(authToken))
+                if (string.IsNullOrEmpty(accessToken))
                 {
                     return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
                 }
 
-                // Adiciona e envia
-                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", authToken);
+                // Verifica se o access token é válido
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
                 var response = await _httpClient.GetAsync("api/auth/check-auth");
 
                 if (response.IsSuccessStatusCode)
                 {
                     var claims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.Name, "Usuário Autenticado")
-                };
+            {
+                new Claim(ClaimTypes.Name, "Usuário Autenticado")
+            };
                     var identity = new ClaimsIdentity(claims, "Bearer");
                     var claimsPrincipal = new ClaimsPrincipal(identity);
 
                     return new AuthenticationState(claimsPrincipal);
+                }
+                else if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                {
+                    // Token expirado, tenta renovar com o refresh token
+                    var refreshToken = await _jsRuntime.InvokeAsync<string>("getCookie", "refreshToken");
+
+                    if (!string.IsNullOrEmpty(refreshToken))
+                    {
+                        var refreshRequest = new RefreshTokenRequest
+                        {
+                            AccessToken = accessToken,
+                            RefreshToken = refreshToken
+                        };
+
+                        var refreshResponse = await _httpClient.PostAsJsonAsync("api/auth/refresh", refreshRequest);
+
+                        if (refreshResponse.IsSuccessStatusCode)
+                        {
+                            var authResponse = await refreshResponse.Content.ReadFromJsonAsync<AuthResponse>();
+                            var newAccessToken = authResponse?.Token;
+                            var newRefreshToken = authResponse?.RefreshToken;
+
+                            if (!string.IsNullOrEmpty(newAccessToken))
+                            {
+                                // Atualiza os tokens nos cookies
+                                await _jsRuntime.InvokeVoidAsync("setCookie", "accessToken", newAccessToken, 1);
+                                if (!string.IsNullOrEmpty(newRefreshToken))
+                                {
+                                    await _jsRuntime.InvokeVoidAsync("setCookie", "refreshToken", newRefreshToken, 7);
+                                }
+
+                                // Tenta novamente a autenticação com o novo token
+                                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", newAccessToken);
+                                return await GetAuthenticationStateAsync();
+                            }
+                        }
+                    }
                 }
             }
             catch (Exception ex)

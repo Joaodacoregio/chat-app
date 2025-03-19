@@ -10,7 +10,7 @@ namespace chatApp.Server.Domain.Models
         public int RoomId { get; set; } // Parte da chave primária composta e FK para Room
 
         [Key, Column(Order = 1)]
-        public int UserId { get; set; } // Parte da chave primária composta e FK para User
+        public string UserId { get; set; } // Parte da chave primária composta e FK para User
 
         public virtual Room Room { get; set; } = default!; // Propriedade de navegação
         public virtual User User { get; set; } = default!; // Propriedade de navegação

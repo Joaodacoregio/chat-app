@@ -7,7 +7,9 @@
     public interface ITokenService
     {
         string GenerateToken(User user);
+        string GenerateRefreshToken();
         bool ValidateToken(string token, out JwtSecurityToken? jwtToken);
         ClaimsPrincipal DecodeJwtToken(string token);
+        Task<bool> ValidateRefreshTokenAsync(User user, string refreshToken);
     }
 }

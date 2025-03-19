@@ -1,19 +1,15 @@
-﻿using chatApp.Server.Domain.Models;
-using Microsoft.EntityFrameworkCore;
- 
+﻿using Microsoft.EntityFrameworkCore;
+using chatApp.Server.Domain.Models;
 
-//Essa classe é desnecessaria , eu fiz ela apenas para brincar com interface
 namespace chatApp.Server.Data.Context
 {
-    public interface IAppDbContext
+    public interface IAppDbContext : IDisposable
     {
-        DbSet<User> Users { get; }
-        DbSet<Message> Messages { get; }
-
-        DbSet<Room> Rooms { get; }
-
-        DbSet<RoomUser> RoomsUsers { get; }
+        DbSet<Room> Rooms { get; set; }
+        DbSet<Message> Messages { get; set; }
+        DbSet<RoomUser> RoomsUsers { get; set; }
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
+        DbSet<TEntity> Set<TEntity>() where TEntity : class;
     }
 }

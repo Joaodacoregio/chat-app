@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Identity;
 using chatApp.Server.Domain.Models;
-using chatApp.Server.Domain.Interfaces.UoW;
-using AutoMapper;
 using chatApp.Server.Application.DTOs;
+using AutoMapper;
 
 namespace chatApp.Server.Presentation.Controller
 {
@@ -10,12 +10,12 @@ namespace chatApp.Server.Presentation.Controller
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly IUnitOfWork _uow;
+        private readonly UserManager<User> _userManager;
         private readonly IMapper _mapper;
 
-        public UserController(IUnitOfWork unitOfWork, IMapper mapper)
+        public UserController(UserManager<User> userManager, IMapper mapper)
         {
-            _uow = unitOfWork;
+            _userManager = userManager;
             _mapper = mapper;
         }
 
@@ -30,25 +30,21 @@ namespace chatApp.Server.Presentation.Controller
                     return BadRequest("Email, senha e nickname são obrigatórios.");
                 }
 
-                // Verificando se já existe um usuário
-                var existingUser = await _uow.Users.GetUserByEmailAsync(dto.Email);
-                if (existingUser != null)
+                // Mapeando o DTO para a entidade User
+                var user = _mapper.Map<User>(dto);
+                user.UserName = dto.Email; // O Identity usa UserName como identificador único, geralmente o email
+
+                // Criando o usuário com o Identity
+                var result = await _userManager.CreateAsync(user, dto.Password);
+
+                if (result.Succeeded)
                 {
-                    return BadRequest("Email já registrado.");
+                    return Ok("Usuário registrado com sucesso.");
                 }
 
-                // Hash da senha
-                var salt = BCrypt.Net.BCrypt.GenerateSalt();
-                var hashedPassword = BCrypt.Net.BCrypt.HashPassword(dto.Password, salt);
-
-                // Mapeando o DTO para a entidade User, e alterando a senha para o valor criptografado
-                var user = _mapper.Map<User>(dto);
-                user.Password = hashedPassword;  
-
-                await _uow.Users.AddAsync(user);
-                await _uow.SaveChangesAsync();
-
-                return Ok("Usuário registrado com sucesso.");
+                // Se houver erros, retorna os detalhes
+                var errors = result.Errors.Select(e => e.Description);
+                return BadRequest(new { message = "Erro ao registrar usuário", errors });
             }
             catch (Exception ex)
             {

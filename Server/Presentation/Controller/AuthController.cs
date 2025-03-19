@@ -1,11 +1,12 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Identity;
 using chatApp.Server.Services.Interfaces;
 using chatApp.Server.Application.DTOs;
 using System.IdentityModel.Tokens.Jwt;
+using chatApp.Server.Domain.Models;
 using chatApp.Server.Domain.Interfaces.Services;
-using chatApp.Server.Domain.Interfaces.UoW;
-
+using System.Security.Claims;
 
 namespace chatApp.Server.Presentation.Controllers
 {
@@ -13,20 +14,18 @@ namespace chatApp.Server.Presentation.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly IUnitOfWork _uow;
+        private readonly UserManager<User> _userManager;
         private readonly ITokenService _tokenService;
         private readonly ITokenKeeper _tokenKeeper;
         private readonly IMapper _mapper;
 
-        public AuthController
-            (
-            IUnitOfWork unityOfWork,
+        public AuthController(
+            UserManager<User> userManager,
             ITokenService tokenService,
             ITokenKeeper saveTokenService,
-            IMapper mapper
-            )
+            IMapper mapper)
         {
-            _uow = unityOfWork;
+            _userManager = userManager;
             _tokenService = tokenService;
             _tokenKeeper = saveTokenService;
             _mapper = mapper;
@@ -43,23 +42,12 @@ namespace chatApp.Server.Presentation.Controllers
                 return Unauthorized(new { message = "Token não fornecido." });
             }
 
-            try
+            if (!_tokenService.ValidateToken(token, out JwtSecurityToken? jwtToken))
             {
-                var handler = new JwtSecurityTokenHandler();
-                var jwtToken = handler.ReadJwtToken(token);
-
-                // Validação simples baseada na expiração
-                if (jwtToken.ValidTo < DateTime.UtcNow)
-                {
-                    return Unauthorized(new { message = "Token expirado." });
-                }
-
-                return Ok(new { message = "Usuário autenticado." });
+                return Unauthorized(new { message = "Token inválido ou expirado." });
             }
-            catch (Exception)
-            {
-                return Unauthorized(new { message = "Token inválido." });
-            }
+
+            return Ok(new { message = "Usuário autenticado." });
         }
 
         [HttpPost("login")]
@@ -72,26 +60,77 @@ namespace chatApp.Server.Presentation.Controllers
                     return BadRequest("Dados inválidos.");
                 }
 
-                var user = await _uow.Users.GetUserByEmailAsync(model.Email);
-                if (user == null || !BCrypt.Net.BCrypt.Verify(model.Password, user.Password))
+                // Busca o usuário pelo email usando o UserManager
+                var user = await _userManager.FindByEmailAsync(model.Email);
+                if (user == null || !await _userManager.CheckPasswordAsync(user, model.Password))
                 {
                     return Unauthorized("Credenciais inválidas.");
                 }
 
-                // GERA O TOKEN USANDO O TOKEN SERVICE
-                var token = _tokenService.GenerateToken(user);
+                // Gera o access token e o refresh token
+                var accessToken = _tokenService.GenerateToken(user);
+                var refreshToken = _tokenService.GenerateRefreshToken();
 
-                // SALVA O TOKEN
-                _tokenKeeper.Save(token, Response);
+                // Armazena o refresh token no usuário
+                user.RefreshToken = refreshToken;
+                user.RefreshTokenExpireTime = DateTime.UtcNow.AddDays(7); // Refresh token válido por 7 dias
+                await _userManager.UpdateAsync(user);
 
+                // Salva o access token (ex.: em cookie)
+                _tokenKeeper.Save(accessToken, Response);
+
+                // Mapeia a resposta
                 var authResponse = _mapper.Map<UserLoginResponseDto>(user);
-                authResponse.Token = token;
+                authResponse.Token = accessToken;
+                authResponse.RefreshToken = refreshToken;
 
                 return Ok(authResponse);
             }
             catch (Exception ex)
             {
-                // Logar o erro seria interessante aqui, caso tenha um logger
+                return StatusCode(500, new { message = "Erro interno no servidor.", details = ex.Message });
+            }
+        }
+
+        [HttpPost("refresh")]
+        public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequestDto model)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(model.AccessToken) || string.IsNullOrEmpty(model.RefreshToken))
+                {
+                    return BadRequest("Access token e refresh token são obrigatórios.");
+                }
+
+                // Decodifica o access token para obter o ID do usuário
+                var principal = _tokenService.DecodeJwtToken(model.AccessToken);
+                var userId = principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+                if (userId == null)
+                {
+                    return Unauthorized("Token inválido.");
+                }
+
+                // Busca o usuário
+                var user = await _userManager.FindByIdAsync(userId);
+                if (user == null || !await _tokenService.ValidateRefreshTokenAsync(user, model.RefreshToken))
+                {
+                    return Unauthorized("Refresh token inválido ou expirado.");
+                }
+
+                // Gera um novo access token
+                var newAccessToken = _tokenService.GenerateToken(user);
+                _tokenKeeper.Save(newAccessToken, Response);
+
+                // Mapeia a resposta
+                var authResponse = _mapper.Map<UserLoginResponseDto>(user);
+                authResponse.Token = newAccessToken;
+                authResponse.RefreshToken = model.RefreshToken; // Mantém o mesmo refresh token
+
+                return Ok(authResponse);
+            }
+            catch (Exception ex)
+            {
                 return StatusCode(500, new { message = "Erro interno no servidor.", details = ex.Message });
             }
         }

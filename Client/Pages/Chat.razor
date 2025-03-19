@@ -111,7 +111,7 @@
 
     <div class="chat-input-box">
         <div class="input-group">
-            <input type="text" class="form-control rounded-start p-3" style="height: 60px;" @bind="message" placeholder="Type your message..." @onkeydown="OnEnterKeyDown" />
+            <input type="text" class="form-control rounded-start p-3" style="height: 60px;" @bind="message" placeholder="Digite sua mensagem..." @onkeydown="OnEnterKeyDown" />
             <button class="btn btn-primary rounded-end" style="height: 60px;" @onclick="SendMessage">Send</button>
         </div>
     </div>
@@ -211,7 +211,7 @@
             });
 
             // Obter o token e decodificar o nome do usuário atual
-            var token = await GetCookieAsync("authToken");
+            var token = await GetCookieAsync("accessToken");
             await _hubConnection.StartAsync();
             await _hubConnection.InvokeAsync("UserConnected", token);
         }
@@ -234,7 +234,7 @@
         {
             try
             {
-                var token = await GetCookieAsync("authToken");
+                var token = await GetCookieAsync("accessToken");
                 await _hubConnection.SendAsync("SendMessage", message, token);
                 message = "";
                 StateHasChanged();
@@ -285,7 +285,7 @@
 
     private async Task SignOut()
     {
-        await JSRuntime.InvokeVoidAsync("removeCookie", "authToken");
+        await JSRuntime.InvokeVoidAsync("removeCookie", "accessToken");
         Navigation.NavigateTo("/login");
     }
 }

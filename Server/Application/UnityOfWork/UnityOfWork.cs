@@ -1,29 +1,27 @@
 ﻿using chatApp.Server.Application.Bases;
 using chatApp.Server.Application.Repositories;
-using chatApp.Server.Data.Context;
 using chatApp.Server.Domain.Interfaces.Bases;
 using chatApp.Server.Domain.Interfaces.Repository;
 using chatApp.Server.Domain.Interfaces.UoW;
- 
+using chatApp.Server.Data.Context;
 
 namespace chatApp.Server.Application.UoW
 {
     public class UnitOfWork : IUnitOfWork
     {
-        public AppDbContext Context { get; }
+        public IAppDbContext Context { get; }
 
         private IUserRepository? _users;
         private IMessageRepository? _messages;
         private IRoomRepository? _rooms;
 
-        //Lazy loading (Para evitar injetar no construtor)
         public IUserRepository Users => _users ??= new UserRepository(Context);
         public IMessageRepository Messages => _messages ??= new MessageRepository(Context);
         public IRoomRepository Rooms => _rooms ??= new RoomRepository(Context);
 
-        public UnitOfWork(AppDbContext context)
+        public UnitOfWork(IAppDbContext context)
         {
-            Context = context;
+            Context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
         public async Task<int> SaveChangesAsync()

@@ -1,11 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using chatApp.Server.Domain.Models;
+using chatApp.Server.Domain.Interfaces.Bases;
 
 namespace chatApp.Server.Data.Context
 {
-    public class AppDbContext : DbContext, IAppDbContext
+    public class AppDbContext : IdentityDbContext<User>, IAppDbContext
     {
-        public DbSet<User> Users { get; set; }
         public DbSet<Room> Rooms { get; set; }
         public DbSet<Message> Messages { get; set; }
         public DbSet<RoomUser> RoomsUsers { get; set; }
@@ -14,6 +15,8 @@ namespace chatApp.Server.Data.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder); // Chama o método base para configurar as tabelas do Identity
+
             // Configurar a chave primária composta de RoomUser
             modelBuilder.Entity<RoomUser>()
                 .HasKey(ru => new { ru.RoomId, ru.UserId });
@@ -39,6 +42,17 @@ namespace chatApp.Server.Data.Context
                     Password = null, // Sala pública, sem senha
                     CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc) // Data fixa
                 });
+        }
+
+        // Implementação explícita dos métodos da interface
+        public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            return base.SaveChangesAsync(cancellationToken);
+        }
+
+        public DbSet<TEntity> Set<TEntity>() where TEntity : class
+        {
+            return base.Set<TEntity>();
         }
     }
 }

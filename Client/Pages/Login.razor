@@ -42,22 +42,37 @@
     </div>
 </div>
 
-
 @code {
     private LoginModel loginModel = new();
 
-    //Esse metodo é herdado e so começa quando o usuario entra na pagina e o DOM é carregado
     protected override async Task OnInitializedAsync()
     {
-        // Verifica se o token de autenticação já está presente no cookie
-        var token = await JSRuntime.InvokeAsync<string>("getCookie", "authToken");
+        // Verifica se o access token está presente no cookie
+        var accessToken = await JSRuntime.InvokeAsync<string>("getCookie", "accessToken");
 
-        if (!string.IsNullOrEmpty(token))
+        Console.WriteLine(accessToken);
+
+        // Se o access token não estiver presente ou for inválido, tenta renovar o token
+        if (string.IsNullOrEmpty(accessToken))
         {
-            // Se o token existir, redireciona para a página de chat
-            Navigation.NavigateTo("/chat", true);
+            await TryRefreshToken();
+        }
+        else
+        {
+            // Se o access token está presente, verifica se ele é válido
+            var isValid = await CheckTokenValidity(accessToken);
+            if (isValid)
+            {
+                Navigation.NavigateTo("/chat", true); // Redireciona para o chat se o token for válido
+            }
+            else
+            {
+                // Tenta renovar o token caso o access token seja inválido
+                await TryRefreshToken();
+            }
         }
     }
+
 
     private async Task HandleLogin()
     {
@@ -65,102 +80,168 @@
 
         try
         {
-
             var request = new HttpRequestMessage(HttpMethod.Post, "api/auth/login")
                 {
-                    Content = JsonContent.Create(loginModel)  
+                    Content = JsonContent.Create(loginModel)
                 };
-
             request.Headers.Add("Accept", "application/json");
-
 
             var response = await Http.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
 
-
             if (response.IsSuccessStatusCode)
             {
-                // Tenta desserializar o JSON para obter o token
+                // Desserializa a resposta para obter access token e refresh token
                 var authResponse = await response.Content.ReadFromJsonAsync<AuthResponse>();
-                var token = authResponse?.Token;
+                var accessToken = authResponse?.Token;
+                var refreshToken = authResponse?.RefreshToken;
 
- 
-
-                if (!string.IsNullOrEmpty(token))
+                if (!string.IsNullOrEmpty(accessToken) && !string.IsNullOrEmpty(refreshToken))
                 {
-                    // Armazenar o token no cookie
-                    await JSRuntime.InvokeVoidAsync("setCookie", "authToken", token, 1); // Expiração de 1 dia
+                    // Armazena os tokens nos cookies
+                    await JSRuntime.InvokeVoidAsync("setCookie", "accessToken", accessToken, 1); // 1 dia (ajuste conforme necessário)
+                    await JSRuntime.InvokeVoidAsync("setCookie", "refreshToken", refreshToken, 7); // 7 dias
 
-                    Console.WriteLine(token);
+                    Console.WriteLine($"Access Token: {accessToken}");
+                    Console.WriteLine($"Refresh Token: {refreshToken}");
 
                     await JSRuntime.InvokeVoidAsync("Swal.fire", new
                     {
                         title = "Usuário autenticado!",
                         text = "Login realizado com sucesso.",
                         icon = "success",
-                        timer = 1500, // 1.5 segundos
+                        timer = 1500,
                         showConfirmButton = false
                     });
 
-
-                    Navigation.NavigateTo("/chat",true);   
-
+                    Navigation.NavigateTo("/chat", true);
                 }
                 else
                 {
-                    // Caso o token seja vazio ou nulo
-                    Console.WriteLine("Token não encontrado ou é inválido.");
+                    Console.WriteLine("Access token ou refresh token não encontrado na resposta.");
                 }
-
             }
             else
             {
-                // Exibir alerta de erro com SweetAlert2
                 await JSRuntime.InvokeVoidAsync("Swal.fire", new
                 {
                     title = "Erro!",
-                    text = "Senha incorreta. Tente novamente.",
+                    text = "Credenciais inválidas. Tente novamente.",
                     icon = "error",
                     confirmButtonText = "OK"
                 });
 
-                // Se a resposta do servidor contiver um erro, captura o conteúdo
-                if (response != null)
-                {
-                    var errorContent = await response.Content.ReadAsStringAsync();
-                    errorMessage = $"Erro no login: {response.StatusCode} - {errorContent}";
-                    Console.WriteLine(errorMessage);
-                }
-                else
-                {
-                    errorMessage = "Erro desconhecido ao tentar fazer login.";
-                    Console.WriteLine(errorMessage);
-                }
+                var errorContent = await response.Content.ReadAsStringAsync();
+                errorMessage = $"Erro no login: {response.StatusCode} - {errorContent}";
+                Console.WriteLine(errorMessage);
             }
         }
         catch (Exception ex)
         {
-            // Captura qualquer exceção inesperada e exibe uma mensagem de erro
             errorMessage = $"Erro: {ex.Message}";
             Console.WriteLine(errorMessage);
-        }
 
-        // Caso haja uma mensagem de erro, pode ser usada posteriormente para exibição no UI
-        if (!string.IsNullOrEmpty(errorMessage))
-        {
-            // Aqui você pode adicionar lógica para mostrar a mensagem de erro na interface de usuário, se necessário
-            Console.WriteLine($"Mensagem de erro: {errorMessage}");
+            await JSRuntime.InvokeVoidAsync("Swal.fire", new
+            {
+                title = "Erro!",
+                text = "Ocorreu um erro ao tentar fazer login.",
+                icon = "error",
+                confirmButtonText = "OK"
+            });
         }
     }
- 
 
+    private async Task<bool> CheckTokenValidity(string token)
+    {
+        try
+        {
+            var request = new HttpRequestMessage(HttpMethod.Get, "api/auth/check-auth");
+            request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
+            var response = await Http.SendAsync(request);
+            return response.IsSuccessStatusCode;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Erro ao verificar token: {ex.Message}");
+            return false;
+        }
+    }
+
+    private async Task TryRefreshToken()
+    {
+        var accessToken = await JSRuntime.InvokeAsync<string>("getCookie", "accessToken");
+        var refreshToken = await JSRuntime.InvokeAsync<string>("getCookie", "refreshToken");
+
+        if (string.IsNullOrEmpty(accessToken) || string.IsNullOrEmpty(refreshToken))
+        {
+            Console.WriteLine("Tokens não encontrados para renovação.");
+            return;
+        }
+
+        try
+        {
+            var refreshRequest = new RefreshTokenRequest
+                {
+                    AccessToken = accessToken,
+                    RefreshToken = refreshToken
+                };
+
+            var request = new HttpRequestMessage(HttpMethod.Post, "api/auth/refresh")
+                {
+                    Content = JsonContent.Create(refreshRequest)
+                };
+            request.Headers.Add("Accept", "application/json");
+
+            var response = await Http.SendAsync(request);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var authResponse = await response.Content.ReadFromJsonAsync<AuthResponse>();
+                var newAccessToken = authResponse?.Token;
+                var newRefreshToken = authResponse?.RefreshToken;
+
+                if (!string.IsNullOrEmpty(newAccessToken))
+                {
+                    // Atualiza os tokens nos cookies
+                    await JSRuntime.InvokeVoidAsync("setCookie", "accessToken", newAccessToken, 1);
+                    if (!string.IsNullOrEmpty(newRefreshToken)) // Opcional: se o servidor retornar um novo refresh token
+                    {
+                        await JSRuntime.InvokeVoidAsync("setCookie", "refreshToken", newRefreshToken, 7);
+                    }
+
+                    Console.WriteLine("Token renovado com sucesso.");
+                 
+                }
+            }
+            else
+            {
+                Console.WriteLine("Falha ao renovar o token. Redirecionando para login.");
+ 
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Erro ao renovar token: {ex.Message}");
+   
+        }
+    }
+
+    // Modelos ajustados
     public class AuthResponse
     {
         public string Token { get; set; } = string.Empty;
+        public string RefreshToken { get; set; } = string.Empty;
     }
 
     public class LoginModel
     {
         public string Email { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
+    }
+
+    public class RefreshTokenRequest
+    {
+        public string AccessToken { get; set; } = string.Empty;
+        public string RefreshToken { get; set; } = string.Empty;
     }
 }
