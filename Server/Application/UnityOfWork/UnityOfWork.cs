@@ -6,7 +6,7 @@ using chatApp.Server.Domain.Interfaces.Repository;
 using chatApp.Server.Domain.Interfaces.UoW;
  
 
-namespace chatApp.Server.Infrastructure.UoW
+namespace chatApp.Server.Application.UoW
 {
     public class UnitOfWork : IUnitOfWork
     {

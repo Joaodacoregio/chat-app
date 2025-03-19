@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "jCSJp1AVSes=",
+  "dgSpecHash": "yNP5nP2YrjU=",
   "success": true,
   "projectFilePath": "C:\\Users\\joao.vitor\\source\\repos\\Joaodacoregio\\chat-app\\Server\\chatApp.Server.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\joao.vitor\\.nuget\\packages\\automapper\\14.0.0\\automapper.14.0.0.nupkg.sha512",
     "C:\\Users\\joao.vitor\\.nuget\\packages\\bcrypt.net-next\\4.0.3\\bcrypt.net-next.4.0.3.nupkg.sha512",
     "C:\\Users\\joao.vitor\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\joao.vitor\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\7.0.0\\microsoft.aspnetcore.authentication.jwtbearer.7.0.0.nupkg.sha512",

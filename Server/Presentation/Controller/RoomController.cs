@@ -1,19 +1,22 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using chatApp.Server.Domain.Models;
-using chatApp.Server.Domain.Interfaces.Bases;
 using chatApp.Server.Domain.Interfaces.UoW;
+using chatApp.Server.Application.DTOs;
 
-namespace chatApp.Server.Presentation.Controller
+namespace chatApp.Server.Presentation.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     public class RoomController : ControllerBase
     {
         private readonly IUnitOfWork _uow;
+        private readonly IMapper _mapper;
 
-        public RoomController(IUnitOfWork unityOfWork)
+        public RoomController(IUnitOfWork unityOfWork, IMapper mapper)
         {
             _uow = unityOfWork;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -21,24 +24,15 @@ namespace chatApp.Server.Presentation.Controller
         {
             var rooms = await _uow.Rooms.GetAllAsync();
 
-            var roomsData = rooms.Select(room => new
-            {
-                roomId = room.RoomId,
-                roomName = room.Name,
-                createdAt = room.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")
-            });
+            var roomsData = rooms.Select(room => _mapper.Map<RoomDto>(room));  
 
             return Ok(roomsData);
         }
 
         [HttpPost("create")]
-        public async Task<IActionResult> CreateRoom([FromBody] RoomData rd)
+        public async Task<IActionResult> CreateRoom([FromBody] RoomValidationDto rd)
         {
-            var room = new Room
-            {
-                Name = rd.RoomName,
-                Password = rd.Password
-            };
+            var room = _mapper.Map<Room>(rd);  
 
             await _uow.Rooms.AddAsync(room);
             await _uow.SaveChangesAsync();
@@ -47,7 +41,7 @@ namespace chatApp.Server.Presentation.Controller
         }
 
         [HttpPost("Validate")]
-        public async Task<IActionResult> ValidateRoom([FromBody] RoomData rd)
+        public async Task<IActionResult> ValidateRoom([FromBody] RoomValidationDto rd)
         {
             var room = await _uow.Rooms.GetRoomByNameAsync(rd.RoomName);
             if (room == null)
@@ -64,7 +58,7 @@ namespace chatApp.Server.Presentation.Controller
         }
 
         [HttpPost("PublicRoom")]
-        public async Task<IActionResult> PublicRoom([FromBody] RoomData rd)
+        public async Task<IActionResult> PublicRoom([FromBody] RoomValidationDto rd)
         {
             var room = await _uow.Rooms.GetRoomByNameAsync(rd.RoomName);
             if (room == null)
@@ -78,12 +72,6 @@ namespace chatApp.Server.Presentation.Controller
             }
 
             return Unauthorized();
-        }
-
-        public class RoomData
-        {
-            public string RoomName { get; set; } = "";
-            public string? Password { get; set; }
         }
     }
 }

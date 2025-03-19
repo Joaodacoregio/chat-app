@@ -1,11 +1,13 @@
-﻿using chatApp.Server.Domain.Models;
+﻿using AutoMapper;
+using chatApp.Server.Application.DTOs;
+using chatApp.Server.Domain.Models;
+using chatApp.Server.Services.Interfaces;
+using chatApp.Server.Domain.Interfaces.UoW;
 using Microsoft.AspNetCore.SignalR;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Newtonsoft.Json;
-using chatApp.Server.Domain.Interfaces.Repository;
-using chatApp.Server.Services.Interfaces;
-using chatApp.Server.Domain.Interfaces.UoW;
+using System.Linq;
 
 namespace chatApp.Server.Presentation.Hubs
 {
@@ -13,12 +15,14 @@ namespace chatApp.Server.Presentation.Hubs
     {
         private readonly IUnitOfWork _uow;
         private readonly ITokenService _tokenService;
+        private readonly IMapper _mapper;
         private static Dictionary<string, string> _userConnections = new Dictionary<string, string>();
 
-        public ChatHub(IUnitOfWork unityOfWork, ITokenService tokenService)
+        public ChatHub(IUnitOfWork unityOfWork, ITokenService tokenService, IMapper mapper)
         {
             _tokenService = tokenService;
             _uow = unityOfWork;
+            _mapper = mapper;
         }
 
         public async Task SendMessage(string message, string token)
@@ -43,12 +47,11 @@ namespace chatApp.Server.Presentation.Hubs
             await _uow.Messages.AddMessageAsync(newMessage);
             await _uow.SaveChangesAsync();
 
-            var messageData = JsonConvert.SerializeObject(new
-            {
-                userName,
-                content = message,
-                timestamp = newMessage.Timestamp.ToString("yyyy-MM-dd HH:mm:ss")
-            });
+            // Mapear a mensagem para DTO usando AutoMapper
+            var messageDto = _mapper.Map<MessageDto>(newMessage);
+
+            // Serializando os dados da mensagem para enviar via SignalR
+            var messageData = JsonConvert.SerializeObject(messageDto);
 
             await Clients.All.SendAsync("ReceiveMessage", messageData);
         }
@@ -60,7 +63,10 @@ namespace chatApp.Server.Presentation.Hubs
 
             _userConnections[Context.ConnectionId] = userName;
 
-            var userConnectedData = JsonConvert.SerializeObject(new { userName });
+            // Mapear o usuário para DTO usando AutoMapper
+            var userDto = _mapper.Map<User>(new User { Nickname = userName });
+
+            var userConnectedData = JsonConvert.SerializeObject(userDto);
             await Clients.All.SendAsync("UserConnected", userConnectedData);
             await Clients.Caller.SendAsync("SetCurrentUser", userName);
 
@@ -69,15 +75,9 @@ namespace chatApp.Server.Presentation.Hubs
 
             // Carregar histórico usando repository
             var pastMessages = await _uow.Messages.GetAllMessagesAsync();
+            var pastMessagesDto = _mapper.Map<IEnumerable<MessageDto>>(pastMessages);
 
-            var pastMessagesJson = JsonConvert.SerializeObject(
-                pastMessages.Select(m => new
-                {
-                    userName = m.UserName,
-                    content = m.Content,
-                    timestamp = m.Timestamp.ToString("yyyy-MM-dd HH:mm:ss")
-                })
-            );
+            var pastMessagesJson = JsonConvert.SerializeObject(pastMessagesDto);
 
             await Clients.Caller.SendAsync("ReceivePastMessages", pastMessagesJson);
         }

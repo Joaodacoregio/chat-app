@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using chatApp.Server.Services.Interfaces;
-using chatApp.Server.Domain.Interfaces.Bases;
-using Microsoft.AspNetCore.Identity.Data;
+using chatApp.Server.Application.DTOs;
 using System.IdentityModel.Tokens.Jwt;
 using chatApp.Server.Domain.Interfaces.Services;
 using chatApp.Server.Domain.Interfaces.UoW;
@@ -15,12 +15,20 @@ namespace chatApp.Server.Presentation.Controllers
         private readonly IUnitOfWork _uow;
         private readonly ITokenService _tokenService;
         private readonly ITokenKeeper _tokenKeeper;
+        private readonly IMapper _mapper;
 
-        public AuthController(IUnitOfWork unityOfWork, ITokenService tokenService, ITokenKeeper saveTokenService)
+        public AuthController
+            (
+            IUnitOfWork unityOfWork,
+            ITokenService tokenService,
+            ITokenKeeper saveTokenService,
+            IMapper mapper
+            )
         {
             _uow = unityOfWork;
             _tokenService = tokenService;
             _tokenKeeper = saveTokenService;
+            _mapper = mapper;
         }
 
         // VERIFICAÇÃO SE USUÁRIO ESTÁ AUTENTICADO
@@ -54,7 +62,7 @@ namespace chatApp.Server.Presentation.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginRequest model)
+        public async Task<IActionResult> Login([FromBody] UserLoginRequestDto model)
         {
             try
             {
@@ -75,7 +83,10 @@ namespace chatApp.Server.Presentation.Controllers
                 // SALVA O TOKEN
                 _tokenKeeper.Save(token, Response);
 
-                return Ok(new { Token = token });
+                var authResponse = _mapper.Map<UserLoginResponseDto>(user);
+                authResponse.Token = token;
+
+                return Ok(authResponse);
             }
             catch (Exception ex)
             {
@@ -83,6 +94,5 @@ namespace chatApp.Server.Presentation.Controllers
                 return StatusCode(500, new { message = "Erro interno no servidor.", details = ex.Message });
             }
         }
-
     }
 }

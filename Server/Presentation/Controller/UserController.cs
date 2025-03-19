@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using chatApp.Server.Domain.Models;
-using System.Text.Json;
-using chatApp.Server.Domain.Interfaces.Bases;
 using chatApp.Server.Domain.Interfaces.UoW;
-
+using AutoMapper;
+using chatApp.Server.Application.DTOs;
 
 namespace chatApp.Server.Presentation.Controller
 {
@@ -11,33 +10,28 @@ namespace chatApp.Server.Presentation.Controller
     [ApiController]
     public class UserController : ControllerBase
     {
-        //Agora da para usar essa interface para fazer o controle direto com o DB
         private readonly IUnitOfWork _uow;
+        private readonly IMapper _mapper;
 
-        public UserController(IUnitOfWork unitOfWork)
+        public UserController(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _uow = unitOfWork;
+            _mapper = mapper;
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] JsonElement data)
+        public async Task<IActionResult> Register([FromBody] UserRegisterDto dto)
         {
             try
             {
-                // Pegando dados do JSON
-                string? email = data.GetProperty("Email").GetString();
-                string? password = data.GetProperty("Password").GetString();
-                string? nickname = data.GetProperty("Nickname").GetString();
-                string? img = data.TryGetProperty("Img", out var imgProperty) ? imgProperty.GetString() : null;
-
                 // Verificação dos campos obrigatórios
-                if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password) || string.IsNullOrEmpty(nickname))
+                if (string.IsNullOrEmpty(dto.Email) || string.IsNullOrEmpty(dto.Password) || string.IsNullOrEmpty(dto.Nickname))
                 {
                     return BadRequest("Email, senha e nickname são obrigatórios.");
                 }
 
                 // Verificando se já existe um usuário
-                var existingUser = await _uow.Users.GetUserByEmailAsync(email);
+                var existingUser = await _uow.Users.GetUserByEmailAsync(dto.Email);
                 if (existingUser != null)
                 {
                     return BadRequest("Email já registrado.");
@@ -45,15 +39,11 @@ namespace chatApp.Server.Presentation.Controller
 
                 // Hash da senha
                 var salt = BCrypt.Net.BCrypt.GenerateSalt();
-                var hashedPassword = BCrypt.Net.BCrypt.HashPassword(password, salt);
+                var hashedPassword = BCrypt.Net.BCrypt.HashPassword(dto.Password, salt);
 
-                var user = new User
-                {
-                    Email = email,
-                    Password = hashedPassword,
-                    Nickname = nickname,
-                    Img = img
-                };
+                // Mapeando o DTO para a entidade User, e alterando a senha para o valor criptografado
+                var user = _mapper.Map<User>(dto);
+                user.Password = hashedPassword;  
 
                 await _uow.Users.AddAsync(user);
                 await _uow.SaveChangesAsync();

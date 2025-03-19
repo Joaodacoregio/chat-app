@@ -13,7 +13,8 @@ using chatApp.Server.Application.Repositories;
 using chatApp.Server.Domain.Interfaces.Repository;
 using chatApp.Server.Application.Services;
 using chatApp.Server.Domain.Interfaces.UoW;
-using chatApp.Server.Infrastructure.UoW;
+using chatApp.Server.Application.UoW;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -82,7 +83,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSignalR();
-
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 #region  Injetar dependencias
 
@@ -95,7 +96,6 @@ builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<ITokenKeeper, CookieTokenSave>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IUserConnectionHubService, UserConnectionHubService>();
-builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 #endregion
 

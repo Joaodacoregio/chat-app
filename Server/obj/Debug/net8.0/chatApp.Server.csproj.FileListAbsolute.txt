@@ -676,3 +676,4 @@ C:\Users\joao.vitor\source\repos\Joaodacoregio\chat-app\Server\obj\Debug\net8.0\
 C:\Users\joao.vitor\source\repos\Joaodacoregio\chat-app\Server\obj\Debug\net8.0\chatApp.Server.pdb
 C:\Users\joao.vitor\source\repos\Joaodacoregio\chat-app\Server\obj\Debug\net8.0\chatApp.Server.genruntimeconfig.cache
 C:\Users\joao.vitor\source\repos\Joaodacoregio\chat-app\Server\obj\Debug\net8.0\ref\chatApp.Server.dll
+C:\Users\joao.vitor\source\repos\Joaodacoregio\chat-app\Server\bin\Debug\net8.0\AutoMapper.dll
