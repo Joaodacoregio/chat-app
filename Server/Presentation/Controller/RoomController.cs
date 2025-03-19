@@ -3,6 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using chatApp.Server.Domain.Models;
 using chatApp.Server.Domain.Interfaces.UoW;
 using chatApp.Server.Application.DTOs;
+using Microsoft.AspNetCore.Authorization;
+
+//TODO: CRIAR PAGINAÇÃO 
 
 namespace chatApp.Server.Presentation.Controllers
 {
@@ -19,6 +22,7 @@ namespace chatApp.Server.Presentation.Controllers
             _mapper = mapper;
         }
 
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetRooms()
         {
@@ -29,6 +33,7 @@ namespace chatApp.Server.Presentation.Controllers
             return Ok(roomsData);
         }
 
+        [Authorize]
         [HttpPost("create")]
         public async Task<IActionResult> CreateRoom([FromBody] RoomValidationDto rd)
         {
@@ -40,6 +45,7 @@ namespace chatApp.Server.Presentation.Controllers
             return Ok();
         }
 
+        [Authorize]
         [HttpPost("Validate")]
         public async Task<IActionResult> ValidateRoom([FromBody] RoomValidationDto rd)
         {
@@ -57,6 +63,7 @@ namespace chatApp.Server.Presentation.Controllers
             return Ok();
         }
 
+        [Authorize]
         [HttpPost("PublicRoom")]
         public async Task<IActionResult> PublicRoom([FromBody] RoomValidationDto rd)
         {

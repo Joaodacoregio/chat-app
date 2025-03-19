@@ -4,10 +4,8 @@ using chatApp.Server.Domain.Models;
 using chatApp.Server.Services.Interfaces;
 using chatApp.Server.Domain.Interfaces.UoW;
 using Microsoft.AspNetCore.SignalR;
-using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Newtonsoft.Json;
-using System.Linq;
 
 namespace chatApp.Server.Presentation.Hubs
 {
