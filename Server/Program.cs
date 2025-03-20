@@ -19,13 +19,17 @@ using chatApp.Server.Domain.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// ========================== CONFIGURANDO BANCO DE DADOS ========================== //
+#region Configurando Banco de Dados
+
 string? connectionString = builder.Configuration.GetConnectionString("ConnectionString");
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite(connectionString));
 
-// ========================== CONFIGURANDO IDENTITY ========================== //
+#endregion
+
+#region Configurando Identity
+
 builder.Services.AddIdentity<User, IdentityRole>(options =>
 {
     options.Password.RequireDigit = true;
@@ -37,7 +41,10 @@ builder.Services.AddIdentity<User, IdentityRole>(options =>
 .AddEntityFrameworkStores<AppDbContext>()
 .AddDefaultTokenProviders();
 
-// ========================== CONFIGURANDO JWT ========================== //
+#endregion
+
+#region Configurando JWT
+
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
 var secretKey = jwtSettings["SecretKey"] ?? throw new InvalidOperationException("JWT SecretKey not found!");
 
@@ -60,32 +67,44 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-// ========================== CONFIGURANDO CORS ========================== //
+#endregion
+
+#region Configurando CORS
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
     {
-        policy.WithOrigins("http://192.168.1.162:5001")
+        policy.WithOrigins(
+                  "http://192.168.1.162:5001")
               .AllowCredentials()
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
 });
 
-// ========================== CONFIGURANDO HOST ========================== //
+#endregion
+
+#region Configurando Kestrel
+
 builder.WebHost.ConfigureKestrel(options =>
 {
     options.ListenAnyIP(5000);
 });
 
-// ========================== CONFIGURANDO SERVIÇOS ========================== //
+#endregion
+
+#region Configurando Serviços Adicionais
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSignalR();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-#region Injetar dependências
+#endregion
+
+#region Injetar Dependências
 
 builder.Services.AddScoped<IAppDbContext>(provider => provider.GetRequiredService<AppDbContext>());
 builder.Services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
@@ -96,20 +115,24 @@ builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<ITokenKeeper, CookieTokenSave>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IUserConnectionHubService, UserConnectionHubService>();
+
 #endregion
 
-// ========================= Construir ========================== //
+#region Configurando Pipeline
+
 var app = builder.Build();
 
-// ========================== CONFIGURANDO O PIPELINE ========================== //
 app.UseCors("AllowAll");
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
-
 app.MapHub<ChatHub>("/chatHub");
-
-// ========================== INICIANDO A APLICAÇÃO ========================== //
 app.MapGet("/", () => "App rodando!");
 
+#endregion
+
+#region Iniciando Aplicação
+
 app.Run();
+
+#endregion

@@ -30,6 +30,13 @@ namespace chatApp.Server.Presentation.Controller
                     return BadRequest("Email, senha e nickname são obrigatórios.");
                 }
 
+                var userExists = await _userManager.FindByEmailAsync(dto.Email);
+
+                if (userExists != null)
+                {
+                    return StatusCode(500, new { message = "Usuario ja existe!"});
+                }
+
                 // Mapeando o DTO para a entidade User
                 var user = _mapper.Map<User>(dto);
                 user.UserName = dto.Email; // O Identity usa UserName como identificador único, geralmente o email
