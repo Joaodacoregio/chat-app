@@ -1,4 +1,4 @@
-﻿@page "/chat"
+﻿@page "/chat/{RoomName}"
 @attribute [Authorize]
 @inject NavigationManager Navigation
 @inject IJSRuntime JSRuntime
@@ -118,6 +118,10 @@
 </div>
 
 @code {
+    //Aqui o parametro pode ser que tenha que ser formatado!
+    [Parameter]
+    public string RoomName { get; set; } = string.Empty;
+
     private string message = "";
     private HubConnection? _hubConnection;
     private List<string> connectedUsers = new List<string>();
@@ -213,7 +217,7 @@
             // Obter o token e decodificar o nome do usuário atual
             var token = await GetCookieAsync("accessToken");
             await _hubConnection.StartAsync();
-            await _hubConnection.InvokeAsync("UserConnected", token);
+            await _hubConnection.InvokeAsync("UserConnected", token, RoomName);
         }
         catch (Exception ex)
         {
@@ -235,7 +239,7 @@
             try
             {
                 var token = await GetCookieAsync("accessToken");
-                await _hubConnection.SendAsync("SendMessage", message, token);
+                await _hubConnection.SendAsync("SendMessage", message, token, RoomName);
                 message = "";
                 StateHasChanged();
                 await ScrollToBottom();

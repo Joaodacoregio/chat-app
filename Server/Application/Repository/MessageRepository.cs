@@ -29,6 +29,11 @@ namespace chatApp.Server.Application.Repositories
             return await _dbSet.OrderBy(m => m.Timestamp).ToListAsync();
         }
 
+        public async Task<IEnumerable<Message>> GetMessagesByRoomAsync(int RoomId)
+        {
+            return await _dbSet.Where(m => m.Room.RoomId == RoomId).OrderBy(m => m.Timestamp).ToListAsync();
+        }
+
 
     }
 }

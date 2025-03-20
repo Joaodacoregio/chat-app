@@ -6,5 +6,7 @@ namespace chatApp.Server.Domain.Interfaces.Repository
     {
         Task AddMessageAsync(Message message);
         Task<IEnumerable<Message>> GetAllMessagesAsync();
+        Task<IEnumerable<Message>> GetMessagesByRoomAsync(int RoomId);
+
     }
 }
