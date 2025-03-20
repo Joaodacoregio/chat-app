@@ -289,7 +289,6 @@
 
     private async Task SignOut()
     {
-        await JSRuntime.InvokeVoidAsync("removeCookie", "accessToken");
-        Navigation.NavigateTo("/login");
+        Navigation.NavigateTo("/lobby");
     }
 }

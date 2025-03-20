@@ -1,4 +1,4 @@
-﻿ @page "/loby"
+﻿ @page "/lobby"
 @attribute [Authorize]
 @using chatApp.Client.Service;
 @inject NavigationManager Navigation
@@ -147,7 +147,7 @@
 
     private async Task SignOut()
     {
-        await JSRuntime.InvokeVoidAsync("removeCookie", "authToken");
+        await JSRuntime.InvokeVoidAsync("removeCookie", "accessToken");
         Navigation.NavigateTo("/login");
     }
 }

@@ -1,5 +1,5 @@
 ﻿using System.Net.Http.Json;
-using static chatApp.Client.Pages.Loby;
+using static chatApp.Client.Pages.Lobby;
 
 namespace chatApp.Client.Service
 {

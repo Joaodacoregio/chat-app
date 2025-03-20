@@ -63,7 +63,7 @@
             var isValid = await CheckTokenValidity(accessToken);
             if (isValid)
             {
-                Navigation.NavigateTo("/chat", true); // Redireciona para o chat se o token for válido
+                Navigation.NavigateTo("/lobby", true); // Redireciona para o chat se o token for válido
             }
             else
             {
@@ -113,7 +113,7 @@
                         showConfirmButton = false
                     });
 
-                    Navigation.NavigateTo("/chat", true);
+                    Navigation.NavigateTo("/lobby", true);
                 }
                 else
                 {
