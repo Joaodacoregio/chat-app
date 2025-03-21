@@ -60,7 +60,7 @@
         }
     </ul>   
     <button class="btn btn-outline-primary mt-3" @onclick="CreateRoom">Criar Sala</button>
-    <button class="btn btn-outline-danger mt-3" @onclick="SignOut">Sair</button>
+    <button class="btn btn-outline-danger mt-3" @onclick="SignOut">Sign-out</button>
 </div>
 
 @code {
@@ -82,39 +82,11 @@
         availableRooms = await roomManager.GetAvailableRoomsAsync();
     }
 
-    private async Task EnterRoom(string room)
+    private void EnterRoom(string room)
     {
         selectedRoom = room;
 
- 
-        if (await roomManager.IsPublicRoomAsync(room)) // Sala pública (sem senha)
-        {
-            await JSRuntime.InvokeVoidAsync("Swal.fire", "Sucesso", "Entrando na sala pública...", "success");
-            Navigation.NavigateTo($"/chat/{Uri.EscapeDataString(room)}");
-            return;
-        }
-
-        // Se não for pública, pede senha
-        var result = await JSRuntime.InvokeAsync<string>("validateModalRoom");
-
-        if (!string.IsNullOrEmpty(result))
-        {
-            var isValid = await roomManager.ValidateRoomPasswordAsync(room, result);
-
-            if (isValid)
-            {
-                await JSRuntime.InvokeVoidAsync("Swal.fire", "Sucesso", "Entrando na sala...", "success");
-                Navigation.NavigateTo($"/chat/{Uri.EscapeDataString(room)}");
-            }
-            else
-            {
-                await JSRuntime.InvokeVoidAsync("Swal.fire", "Erro", "Senha incorreta!", "error");
-            }
-        }
-        else
-        {
-            await JSRuntime.InvokeVoidAsync("Swal.fire", "Aviso", "Entrada cancelada", "info");
-        }
+        Navigation.NavigateTo($"/chat/{Uri.EscapeDataString(room)}");
     }
 
 

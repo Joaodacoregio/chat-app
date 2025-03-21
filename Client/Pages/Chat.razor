@@ -87,7 +87,7 @@
                 <li class="alert alert-secondary mb-2">@user</li>
             }
         </ul>
-        <button class="btn btn-outline-danger" @onclick="SignOut">Sign Out</button>
+        <button class="btn btn-outline-danger" @onclick="SignOut">Voltar</button>
     </div>
 
 
@@ -122,6 +122,10 @@
     [Parameter]
     public string RoomName { get; set; } = string.Empty;
 
+    [Inject]
+    public required RoomManager roomManager { get; set; }
+
+    private string roomPassword = "";
     private string message = "";
     private HubConnection? _hubConnection;
     private List<string> connectedUsers = new List<string>();
@@ -142,6 +146,13 @@
     {
         try
         {
+            bool isAuthenticated = await AuthenticateRoomAsync();
+            if (!isAuthenticated)
+            {
+                Navigation.NavigateTo("/lobby");
+                return;
+            }
+
             _hubConnection = new HubConnectionBuilder()
                 .WithUrl("http://192.168.1.162:5000/chatHub")
                 .Build();
@@ -278,6 +289,33 @@
         }
     }
 
+    private async Task<bool> AuthenticateRoomAsync()
+    {
+        bool isPublic = await roomManager.IsPublicRoomAsync(RoomName);
+
+        if (isPublic)
+        {
+            await JSRuntime.InvokeVoidAsync("Swal.fire", "Sucesso", "Sala pública!", "success");
+            return true;
+        }
+
+        roomPassword = await JSRuntime.InvokeAsync<string>("validateModalRoom");
+        if (string.IsNullOrEmpty(roomPassword))
+        {
+            await JSRuntime.InvokeVoidAsync("Swal.fire", "Erro", "Senha não fornecida!", "error");
+            return false;
+        }
+
+        bool isValidPassword = await roomManager.ValidateRoomPasswordAsync(RoomName, roomPassword);
+        if (!isValidPassword)
+        {
+            await JSRuntime.InvokeVoidAsync("Swal.fire", "Erro", "Senha incorreta!", "error");
+            return false;
+        }
+
+        await JSRuntime.InvokeVoidAsync("Swal.fire", "Sucesso", "Senha correta! Entrando na sala...", "success");
+        return true;
+    }
     public async ValueTask DisposeAsync()
     {
         if (_hubConnection is not null)
